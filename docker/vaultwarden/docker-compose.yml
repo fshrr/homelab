@@ -1,0 +1,14 @@
+services:
+  netbird-client:
+    image: netbirdio/netbird:latest
+    container_name: PEER_NAME
+    hostname: PEER_NAME
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_RESOURCE
+    environment:
+      - NB_SETUP_KEY=<SETUP KEY>
+    volumes:
+      - netbird-client:/etc/netbird
+    restart: unless-stopped

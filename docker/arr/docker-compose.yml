@@ -1,0 +1,90 @@
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Toronto
+    volumes:
+      - ${APPDATA_PATH}/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    labels:
+      - "homepage.group=Content Fetchers"
+      - "homepage.name=Radarr"
+      - "homepage.icon=sh-radarr"
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Toronto
+    ports:
+      - 7878:7878
+    volumes:
+      - ${APPDATA_PATH}/radarr:/config
+      - ${MEDIA_PATH}/movies:/movies
+      - ${DOWNLOADS_PATH}:/downloads
+    restart: unless-stopped
+    labels:
+      - "homepage.group=Content Fetchers"
+      - "homepage.name=Prowlarr"
+      - "homepage.icon=sh-prowlarr"
+      - "homepage.href=http://localhost:7878"
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Toronto
+    volumes:
+      - ${APPDATA_PATH}/sonarr:/config
+      - ${MEDIA_PATH}/tv:/tv
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    labels:
+      - "homepage.group=Content Fetchers"
+      - "homepage.name=Sonarr"
+      - "homepage.icon=sh-sonarr"
+      - "homepage.href=http://localhost:7878"
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Toronto
+      - TRANSMISSION_WEB_HOME= #optional
+      - USER= #optional
+      - PASS= #optional
+      - WHITELIST= #optional
+      - PEERPORT= #optional
+      - HOST_WHITELIST= #optional
+    volumes:
+      - ${APPDATA_PATH}/transmission:/config
+      - ${DOWNLOADS_PATH}:/downloads
+      # - /mnt/data/torrent_watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+    labels:
+      - "homepage.group=Content Fetchers"
+      - "homepage.name=Transmission"
+      - "homepage.icon=sh-transmission"
+      - "homepage.href=http://localhost:9091"
+
+networks:
+  default:
+    name: proxy
+    external: true

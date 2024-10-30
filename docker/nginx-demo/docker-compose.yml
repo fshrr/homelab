@@ -1,0 +1,16 @@
+services:
+  nginx:
+    image: nginxdemos/nginx-hello
+    container_name: nginx-demo
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`nginx-demo.homelab.fahimshahreer.com`)"
+      - "traefik.http.routers.nginx.entrypoints=https"
+      - "traefik.http.routers.nginx.tls=true"
+      - "traefik.http.services.nginx.loadbalancer.server.port=8080"
+    
+networks:
+  default:
+    name: proxy
+    external: true
+

@@ -1,0 +1,52 @@
+{
+	"cloudflare": [
+		{
+			"authentication": {
+				"api_token": "FNTewrbTFKJtNvZD89vz2QdaADMde5B2Q7v2_3FR"
+			},
+			"zone_id": "914b3831fc2e5c7e184d890c64e598d6",
+			"subdomains": [
+				{
+					"name": "homelab",
+					"proxied": false
+				},
+				{
+					"name": "portainer.homelab",
+					"proxied": false
+				},
+				{
+					"name": "plex.homelab",
+					"proxied": false
+				},
+				{
+					"name": "radarr.homelab",
+					"proxied": false
+				},
+				{
+					"name": "sonarr.homelab",
+					"proxied": false
+				},
+				{
+					"name": "prowlarr.homelab",
+					"proxied": false
+				},
+				{
+					"name": "npm.homelab",
+					"proxied": false
+				},
+				{
+					"name": "transmission.homelab",
+					"proxied": false
+				},
+				{
+					"name": "nginx-demo.homelab",
+					"proxied": false
+				}
+			]
+		}
+	],
+	"a": true,
+	"aaaa": true,
+	"purgeUnknownRecords": true,
+	"ttl": 300
+}
