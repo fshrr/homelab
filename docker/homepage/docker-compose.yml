@@ -16,11 +16,12 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
+    ports:
+      - 3000:3000
     volumes:
-      - ${APPDATA_PATH}/homepage:/app/config
+      - homepage_data:/app/config
     restart: unless-stopped
 
-networks:
-  default:
-    name: proxy
+volumes:
+  homepage_data:
     external: true

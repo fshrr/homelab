@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Ensure one parameter is provided
-if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 <volume-name-prefix>"
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <volume-name> <device-path>"
   exit 1
 fi
 
 # Parameters
-PARAM=$1
-VOLUME_NAME="${PARAM}_data"
+VOLUME_NAME=$1
+DIRECTORY=$2
+
 IP_ADDRESS="192.168.2.120"  # Replace with your NFS server IP
-DIRECTORY="/appdata/${PARAM}"  # Replace with your NFS directory structure
 
 # NFS options
 NFS_OPTIONS="addr=${IP_ADDRESS},rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14,nfsvers=4"
