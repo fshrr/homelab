@@ -11,11 +11,10 @@ services:
       - jellyfin_data:/config
       - movies:/data/movies
       - tv:/data/tv
+    devices:
+      - /dev/dri:/dev/dri
     ports:
       - 8096:8096
-      - 8920:8920 #optional
-      - 7359:7359/udp #optional
-      - 1900:1900/udp #optional
     restart: unless-stopped
     labels:
       - "homepage.group=Media"

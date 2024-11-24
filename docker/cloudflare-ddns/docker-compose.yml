@@ -7,8 +7,8 @@ services:
       - no-new-privileges:true
     network_mode: 'host'
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=1001
+      - PGID=1001
     volumes:
       - ./config.json:/config.json:ro
     restart: unless-stopped

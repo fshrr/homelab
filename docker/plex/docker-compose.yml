@@ -5,26 +5,20 @@ services:
     container_name: plex
     network_mode: host
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=1001
+      - PGID=1001
       - TZ=America/Toronto
       - VERSION=docker
-      - PLEX_CLAIM=claim-5a96WuaFmG66JnxtQNHd
+      - PLEX_CLAIM=claim-9wxn7nnhdprze6ci4FtN
     volumes:
-      - plex_data:/config
-      - tv:/tv
-      - movies:/movies
+      - /mnt/docker/plex:/config
+      - /mnt/nas/media/tv:/tv
+      - /mnt/nas/media/movies:/movies
     restart: unless-stopped
+    devices:
+      - /dev/dri:/dev/dri
     labels:
       - "homepage.group=Media"
       - "homepage.name=Plex"
       - "homepage.icon=sh-plex"
-      - "homepage.href=http://localhost:32400"
-
-volumes:
-  plex_data:
-    external: true
-  movies:
-    external: true
-  tv:
-    external: true
+      - "homepage.href=http://192.168.2.100:32400"
