@@ -1,3 +1,7 @@
+include:
+  - torrent.yml
+  - usenet.yml
+
 services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -63,7 +67,7 @@ services:
     environment:
       - PUID=1001
       - PGID=1001
-      - TZ=Etc/UTC
+      - TZ=America/Toronto
     volumes:
       - /mnt/docker/bazarr:/config
       - /mnt/nas/media/movies:/movies
@@ -77,47 +81,6 @@ services:
       - "homepage.icon=sh-bazarr"
       - "homepage.href=http://192.168.2.100:6767"
 
-  transmission:
-    image: lscr.io/linuxserver/transmission:latest
-    container_name: transmission
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
-      - TRANSMISSION_WEB_HOME= #optional
-      - USER= #optional
-      - PASS= #optional
-      - WHITELIST= #optional
-      - PEERPORT= #optional
-      - HOST_WHITELIST= #optional
-    volumes:
-      - /mnt/docker/transmission:/config
-      - /mnt/downloads:/downloads
-    ports:
-      - 9091:9091
-      - 51413:51413
-      - 51413:51413/udp
-    restart: unless-stopped
-    labels:
-      - "homepage.group=Content Fetchers"
-      - "homepage.name=Transmission"
-      - "homepage.icon=sh-transmission"
-      - "homepage.href=http://192.168.2.100:9091"
-
-  flaresolverr:
-    image: flaresolverr/flaresolverr:latest
-    container_name: flaresolverr
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - LOG_LEVEL=info
-      - LOG_HTML=false
-      - CAPTCHA_SOLVER=none
-      - TZ=Europe/Berlin
-    ports:
-      - 8191:8191
-    restart: unless-stopped
-
   recyclarr:
     image: ghcr.io/recyclarr/recyclarr
     container_name: recyclarr
@@ -128,69 +91,3 @@ services:
       - TZ=America/Toronto
       - PUID=1001
       - PGID=1001
-
-  gluetun:
-    image: qmcgaw/gluetun:latest
-    container_name: gluetun
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - 8080:8080
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - VPN_SERVICE_PROVIDER=custom
-      - VPN_TYPE=wireguard
-      - WIREGUARD_ENDPOINT_IP=204.187.100.82
-      - WIREGUARD_ENDPOINT_PORT=250
-      - WIREGUARD_PUBLIC_KEY=0JqkYQqIPJ1OLmQKdISA+uvOMoFS3f55GjwD8zTJSGU=
-      - WIREGUARD_PRIVATE_KEY=6KkqEc0rf4LD3pbOt3T/BEIWCfcKyW4Zny1TuPz5w20=
-      - WIREGUARD_PRESHARED_KEY=40FNq8ALbwCgRhVl+koaZ3WHbpeDSoKvr8KdFmGyPGg=
-      - WIREGUARD_ADDRESSES=10.100.163.212/3
-    volumes:
-      - /mnt/docker/gluetun:/gluetun
-      # - ./client.key:/gluetun/client.key
-      # - ./client.crt:/gluetun/client.crt
-    restart: unless-stopped
-
-  qbittorrent:
-    image: linuxserver/qbittorrent:latest
-    container_name: qbittorrent
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
-      - WEBUI_PORT=8080
-    # ports:
-    #  - 8080:8080
-    volumes:
-      - /mnt/docker/qbittorrent:/config
-      - /mnt/downloads:/downloads
-    depends_on:
-     - gluetun
-    network_mode: container:gluetun
-    restart: unless-stopped
-    labels:
-      - "homepage.group=Content Fetchers"
-      - "homepage.name=qbittorrent"
-      - "homepage.icon=sh-qbittorrent"
-      - "homepage.href=http://192.168.2.100:8080"
-
-  nzbget:
-    image: lscr.io/linuxserver/nzbget:latest
-    container_name: nzbget
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=Etc/UTC
-    volumes:
-      - /mnt/docker/nzbget:/config
-      - /mnt/downloads:/downloads #optional
-    ports:
-      - 6789:6789
-    restart: unless-stopped
-    labels:
-      - "homepage.group=Content Fetchers"
-      - "homepage.name=nzbget"
-      - "homepage.icon=sh-nzbget"
-      - "homepage.href=http://192.168.2.100:6789"

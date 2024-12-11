@@ -1,0 +1,19 @@
+services:
+  nzbget:
+    image: lscr.io/linuxserver/nzbget:latest
+    container_name: nzbget
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/docker/nzbget:/config
+      - /mnt/downloads:/downloads
+    ports:
+      - 6789:6789
+    restart: unless-stopped
+    labels:
+      - "homepage.group=Content Fetchers"
+      - "homepage.name=nzbget"
+      - "homepage.icon=sh-nzbget"
+      - "homepage.href=http://192.168.2.100:6789"

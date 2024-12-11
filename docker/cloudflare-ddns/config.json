@@ -7,7 +7,7 @@
 			"zone_id": "914b3831fc2e5c7e184d890c64e598d6",
 			"subdomains": [
 				{
-					"name": "jellyfin",
+					"name": "",
 					"proxied": false
 				}
 			]
