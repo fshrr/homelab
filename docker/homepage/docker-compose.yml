@@ -16,12 +16,11 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
+    environment:
+      PUID: 1001
+      PGID: 1001
     ports:
       - 3000:3000
     volumes:
-      - homepage_data:/app/config
+      - /mnt/docker/homepage:/app/config
     restart: unless-stopped
-
-volumes:
-  homepage_data:
-    external: true
