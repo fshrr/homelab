@@ -16,7 +16,7 @@ services:
       - 9696:9696
     restart: unless-stopped
     labels:
-      - "homepage.group=Content Fetchers"
+      - "homepage.group=Arrs"
       - "homepage.name=Prowlarr"
       - "homepage.icon=sh-prowlarr"
       - "homepage.href=http://192.168.2.100:9696"
@@ -36,7 +36,7 @@ services:
       - /mnt/downloads:/downloads
     restart: unless-stopped
     labels:
-      - "homepage.group=Content Fetchers"
+      - "homepage.group=Arrs"
       - "homepage.name=Radarr"
       - "homepage.icon=sh-radarr"
       - "homepage.href=http://192.168.2.100:7878"
@@ -56,7 +56,7 @@ services:
       - 8989:8989
     restart: unless-stopped
     labels:
-      - "homepage.group=Content Fetchers"
+      - "homepage.group=Arrs"
       - "homepage.name=Sonarr"
       - "homepage.icon=sh-sonarr"
       - "homepage.href=http://192.168.2.100:8989"
@@ -76,7 +76,7 @@ services:
       - 6767:6767
     restart: unless-stopped
     labels:
-      - "homepage.group=Content Fetchers"
+      - "homepage.group=Arrs"
       - "homepage.name=Bazarr"
       - "homepage.icon=sh-bazarr"
       - "homepage.href=http://192.168.2.100:6767"

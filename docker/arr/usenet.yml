@@ -1,19 +1,39 @@
 services:
-  nzbget:
-    image: lscr.io/linuxserver/nzbget:latest
-    container_name: nzbget
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
     environment:
       - PUID=1001
       - PGID=1001
       - TZ=America/Toronto
     volumes:
-      - /mnt/docker/nzbget:/config
+      - /mnt/docker/sabnzbd:/config
       - /mnt/downloads:/downloads
+      - /mnt/downloads/incomplete:/incomplete-downloads
     ports:
-      - 6789:6789
+      - 8081:8080
     restart: unless-stopped
     labels:
-      - "homepage.group=Content Fetchers"
-      - "homepage.name=nzbget"
-      - "homepage.icon=sh-nzbget"
-      - "homepage.href=http://192.168.2.100:6789"
+      - "homepage.group=Download Clients"
+      - "homepage.name=sabnzbd"
+      - "homepage.icon=sh-sabnzbd"
+      - "homepage.href=http://192.168.2.100:8081"
+
+  #nzbget:
+  #  image: lscr.io/linuxserver/nzbget:latest
+  #  container_name: nzbget
+  #  environment:
+  #    - PUID=1001
+  #    - PGID=1001
+  #    - TZ=America/Toronto
+  #  volumes:
+  #    - /mnt/docker/nzbget:/config
+  #    - /mnt/downloads:/downloads
+  #  ports:
+  #    - 6789:6789
+  #  restart: unless-stopped
+  #  labels:
+  #    - "homepage.group=Download Clients"
+  #    - "homepage.name=nzbget"
+  #    - "homepage.icon=sh-nzbget"
+  #    - "homepage.href=http://192.168.2.100:6789"
