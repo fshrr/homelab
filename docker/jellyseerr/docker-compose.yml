@@ -13,7 +13,7 @@ services:
       - /mnt/docker/jellyseerr:/app/config 
     restart: unless-stopped 
     labels:
-      - "homepage.group=Content Fetchers"
+      - "homepage.group=Arrs"
       - "homepage.name=Jellyseerr"
       - "homepage.icon=sh-jellyseerr"
       - "homepage.href=http://192.168.2.100:5055"
