@@ -8,9 +8,9 @@ services:
       - TZ=Etc/UTC
       - JELLYFIN_PublishedServerUrl=http://192.168.0.5 #optional
     volumes:
-      - jellyfin_data:/config
-      - movies:/data/movies
-      - tv:/data/tv
+      - /mnt/docker/jellyfin:/config
+      - /mnt/nas/media/movies:/movies
+      - /mnt/nas/media/tv:/tv
     devices:
       - /dev/dri:/dev/dri
     ports:
@@ -20,10 +20,5 @@ services:
       - "homepage.group=Media"
       - "homepage.name=Jellyfin"
       - "homepage.icon=sh-jellyfin"
+      - "homepage.showStats=true"
       - "homepage.href=http://192.168.2.100:8096"
-volumes:
-  jellyfin_data:
-  movies:
-    external: true
-  tv:
-    external: true

@@ -18,7 +18,12 @@ services:
     devices:
       - /dev/dri:/dev/dri
     labels:
-      - "homepage.group=Media"
-      - "homepage.name=Plex"
-      - "homepage.icon=sh-plex"
-      - "homepage.href=http://192.168.2.100:32400"
+      - homepage.group=Media
+      - homepage.name=Plex
+      - homepage.icon=sh-plex
+      - homepage.showStats=true
+      - homepage.href=http://192.168.2.100:32400
+      - homepage.widget.type=plex
+      - homepage.widget.url=http://192.168.2.100:32400
+      - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
+      - homepage.widget.fields=["streams", "albums", "movies", "tv"]
