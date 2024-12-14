@@ -17,8 +17,8 @@ services:
       - 8096:8096
     restart: unless-stopped
     labels:
-      - "homepage.group=Media"
-      - "homepage.name=Jellyfin"
-      - "homepage.icon=sh-jellyfin"
-      - "homepage.showStats=true"
-      - "homepage.href=http://192.168.2.100:8096"
+      - homepage.group=Media
+      - homepage.name=Jellyfin
+      - homepage.icon=jellyfin.png
+      - homepage.showStats=true
+      - homepage.href=http://192.168.2.100:8096

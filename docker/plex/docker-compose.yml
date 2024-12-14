@@ -20,7 +20,7 @@ services:
     labels:
       - homepage.group=Media
       - homepage.name=Plex
-      - homepage.icon=sh-plex
+      - homepage.icon=plex.png
       - homepage.showStats=true
       - homepage.href=http://192.168.2.100:32400
       - homepage.widget.type=plex
@@ -43,7 +43,7 @@ services:
     labels:
       - homepage.group=Media
       - homepage.name=Tautulli
-      - homepage.icon=sh-tautulli
+      - homepage.icon=tautulli.png
       - homepage.showStats=true
       - homepage.href=http://192.168.2.100:8181
 
@@ -55,13 +55,13 @@ services:
       - PGID=1001
       - TZ=America/Toronto
     volumes:
-      - /mnt/docker/jellyseer:/config
+      - /mnt/docker/overseerr:/config
     ports:
       - 5055:5055
     restart: unless-stopped
     labels:
       - homepage.group=Media
-      - homepage.name=Overseer
-      - homepage.icon=sh-overseer
+      - homepage.name=Overseerr
+      - homepage.icon=overseerr.png
       - homepage.showStats=true
       - homepage.href=http://192.168.2.100:5055

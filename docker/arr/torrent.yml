@@ -13,10 +13,10 @@ services:
       - 8191:8191
     restart: unless-stopped
     labels:
-      - "homepage.group=Arrs"
-      - "homepage.name=flaresolverr"
-      - "homepage.icon=sh-flaresolverr"
-      - "homepage.href=http://192.168.2.100:8191"
+      - homepage.group=Arrs
+      - homepage.name=flaresolverr
+      - homepage.icon=flaresolverr.png
+      - homepage.href=http://192.168.2.100:8191
 
   gluetun:
     image: qmcgaw/gluetun:latest
@@ -51,7 +51,7 @@ services:
     network_mode: container:gluetun
     restart: unless-stopped
     labels:
-      - "homepage.group=Download Clients"
-      - "homepage.name=qbittorrent"
-      - "homepage.icon=sh-qbittorrent"
-      - "homepage.href=http://192.168.2.100:8090"
+      - homepage.group=Download Clients
+      - homepage.name=qbittorrent
+      - homepage.icon=qbittorrent.png
+      - homepage.href=http://192.168.2.100:8090

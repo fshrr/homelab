@@ -16,10 +16,10 @@ services:
       - 9696:9696
     restart: unless-stopped
     labels:
-      - "homepage.group=Arrs"
-      - "homepage.name=Prowlarr"
-      - "homepage.icon=sh-prowlarr"
-      - "homepage.href=http://192.168.2.100:9696"
+      - homepage.group=Arrs
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.png
+      - homepage.href=http://192.168.2.100:9696
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -36,10 +36,10 @@ services:
       - /mnt/downloads:/downloads
     restart: unless-stopped
     labels:
-      - "homepage.group=Arrs"
-      - "homepage.name=Radarr"
-      - "homepage.icon=sh-radarr"
-      - "homepage.href=http://192.168.2.100:7878"
+      - homepage.group=Arrs
+      - homepage.name=Radarr
+      - homepage.icon=radarr.png
+      - homepage.href=http://192.168.2.100:7878
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -56,10 +56,10 @@ services:
       - 8989:8989
     restart: unless-stopped
     labels:
-      - "homepage.group=Arrs"
-      - "homepage.name=Sonarr"
-      - "homepage.icon=sh-sonarr"
-      - "homepage.href=http://192.168.2.100:8989"
+      - homepage.group=Arrs
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr.png
+      - homepage.href=http://192.168.2.100:8989
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
@@ -76,10 +76,10 @@ services:
       - 6767:6767
     restart: unless-stopped
     labels:
-      - "homepage.group=Arrs"
-      - "homepage.name=Bazarr"
-      - "homepage.icon=sh-bazarr"
-      - "homepage.href=http://192.168.2.100:6767"
+      - homepage.group=Arrs
+      - homepage.name=Bazarr
+      - homepage.icon=bazarr.png
+      - homepage.href=http://192.168.2.100:6767
 
   recyclarr:
     image: ghcr.io/recyclarr/recyclarr
