@@ -26,7 +26,6 @@ services:
       - homepage.widget.type=plex
       - homepage.widget.url=http://192.168.2.100:32400
       - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
-      - homepage.widget.fields=["streams", "albums", "movies", "tv"]
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
@@ -41,10 +40,9 @@ services:
       - 8181:8181
     restart: unless-stopped
     labels:
-      - homepage.group=Media
+      - homepage.group=Arrs
       - homepage.name=Tautulli
       - homepage.icon=tautulli.png
-      - homepage.showStats=true
       - homepage.href=http://192.168.2.100:8181
 
   overseerr:
@@ -60,8 +58,7 @@ services:
       - 5055:5055
     restart: unless-stopped
     labels:
-      - homepage.group=Media
+      - homepage.group=Arrs
       - homepage.name=Overseerr
       - homepage.icon=overseerr.png
-      - homepage.showStats=true
       - homepage.href=http://192.168.2.100:5055
