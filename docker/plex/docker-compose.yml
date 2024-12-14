@@ -27,3 +27,41 @@ services:
       - homepage.widget.url=http://192.168.2.100:32400
       - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
       - homepage.widget.fields=["streams", "albums", "movies", "tv"]
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/docker/tautulli:/config
+    ports:
+      - 8181:8181
+    restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=Tautulli
+      - homepage.icon=sh-tautulli
+      - homepage.showStats=true
+      - homepage.href=http://192.168.2.100:8181
+
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/docker/jellyseer:/config
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=Overseer
+      - homepage.icon=sh-overseer
+      - homepage.showStats=true
+      - homepage.href=http://192.168.2.100:5055
