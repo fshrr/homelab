@@ -2,10 +2,9 @@ services:
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
       - /mnt/docker/sabnzbd:/config
       - /mnt/downloads:/downloads

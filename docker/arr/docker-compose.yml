@@ -6,10 +6,9 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
       - /mnt/docker/prowlarr:/config
     ports:
@@ -24,10 +23,9 @@ services:
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     ports:
       - 7878:7878
     volumes:
@@ -44,10 +42,9 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
       - /mnt/docker/sonarr:/config
       - /mnt/nas/media/tv:/tv
@@ -64,10 +61,9 @@ services:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
       - /mnt/docker/bazarr:/config
       - /mnt/nas/media/movies:/movies

@@ -2,13 +2,13 @@ services:
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
     container_name: flaresolverr
+    extends:
+      file: ../base.yml
+      service: base
     environment:
-      - PUID=1001
-      - PGID=1001
       - LOG_LEVEL=info
       - LOG_HTML=false
       - CAPTCHA_SOLVER=none
-      - TZ=America/Toronto
     ports:
       - 8191:8191
     restart: unless-stopped
@@ -21,6 +21,9 @@ services:
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
+    extends:
+      file: ../base.yml
+      service: base
     cap_add:
       - NET_ADMIN
     ports:
@@ -38,10 +41,10 @@ services:
   qbittorrent:
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    extends:
+      file: ../base.yml
+      service: base
     environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
       - WEBUI_PORT=8090
     volumes:
       - /mnt/docker/qbittorrent:/config
