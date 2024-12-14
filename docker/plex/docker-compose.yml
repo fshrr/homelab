@@ -4,10 +4,10 @@ services:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
     network_mode: host
+    extends:
+      file: ../base.yml
+      service: base
     environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
       - VERSION=docker
       - PLEX_CLAIM=claim-9wxn7nnhdprze6ci4FtN
     volumes:
@@ -30,10 +30,9 @@ services:
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
     container_name: tautulli
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
       - /mnt/docker/tautulli:/config
     ports:
@@ -48,10 +47,9 @@ services:
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
     container_name: overseerr
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Toronto
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
       - /mnt/docker/overseerr:/config
     ports:
