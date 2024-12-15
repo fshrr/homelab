@@ -3,17 +3,18 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-    network_mode: host
     extends:
       file: ../base.yml
       service: base
     environment:
       - VERSION=docker
-      - PLEX_CLAIM=claim-9wxn7nnhdprze6ci4FtN
+      # - PLEX_CLAIM=claim-9wxn7nnhdprze6ci4FtN
     volumes:
       - /mnt/docker/plex:/config
       - /mnt/nas/media/tv:/tv
       - /mnt/nas/media/movies:/movies
+    ports:
+      - 32400:32400  
     restart: unless-stopped
     devices:
       - /dev/dri:/dev/dri
