@@ -11,6 +11,8 @@ services:
       - CAPTCHA_SOLVER=none
     ports:
       - 8191:8191
+    networks:
+      - arr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -27,7 +29,9 @@ services:
     cap_add:
       - NET_ADMIN
     ports:
-      - 8090:8090
+      - 9090:9090
+    networks:
+      - arr
     environment:
       - VPN_SERVICE_PROVIDER=privado
       - OPENVPN_USER=nhnwfixvdiio
@@ -45,7 +49,7 @@ services:
       file: ../base.yml
       service: base
     environment:
-      - WEBUI_PORT=8090
+      - WEBUI_PORT=9090
     volumes:
       - /mnt/docker/qbittorrent:/config
       - /mnt/downloads:/downloads 
@@ -57,4 +61,4 @@ services:
       - homepage.group=Download Clients
       - homepage.name=qbittorrent
       - homepage.icon=qbittorrent.png
-      - homepage.href=http://192.168.2.100:8090
+      - homepage.href=http://192.168.2.100:9090

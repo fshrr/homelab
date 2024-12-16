@@ -1,4 +1,9 @@
----
+networks:
+  arr-overseerr:
+    external: true
+  traefik:
+    external: true
+
 services:
   plex:
     image: lscr.io/linuxserver/plex:latest
@@ -8,13 +13,23 @@ services:
       service: base
     environment:
       - VERSION=docker
-      # - PLEX_CLAIM=claim-9wxn7nnhdprze6ci4FtN
+      - PLEX_CLAIM=claim-sFw4K3nnQ3xuV22jY88F
     volumes:
       - /mnt/docker/plex:/config
       - /mnt/nas/media/tv:/tv
       - /mnt/nas/media/movies:/movies
     ports:
       - 32400:32400  
+      # - 1900:1900
+      # - 5353:5353
+      # - 8324:8324
+      # - 32410:32410
+      # - 32412:32412
+      # - 32413:32413
+      # - 32414:32414
+      # - 32469:32469
+    networks:
+      - traefik
     restart: unless-stopped
     devices:
       - /dev/dri:/dev/dri
@@ -27,6 +42,9 @@ services:
       - homepage.widget.type=plex
       - homepage.widget.url=http://192.168.2.100:32400
       - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex.rule=Host(`plex.fahimshahreer.com`)"
+      - "traefik.http.routers.plex.entrypoints=web"
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
@@ -38,6 +56,8 @@ services:
       - /mnt/docker/tautulli:/config
     ports:
       - 8181:8181
+    networks:
+      - traefik
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -55,9 +75,15 @@ services:
       - /mnt/docker/overseerr:/config
     ports:
       - 5055:5055
+    networks:
+      - traefik
+      - arr-overseerr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
       - homepage.name=Overseerr
       - homepage.icon=overseerr.png
       - homepage.href=http://192.168.2.100:5055
+      - "traefik.enable=true"
+      - "traefik.http.routers.overseerr.rule=Host(`overseerr.fahimshahreer.com`)"
+      - "traefik.http.routers.overseerr.entrypoints=web"

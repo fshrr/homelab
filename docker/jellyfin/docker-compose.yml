@@ -15,6 +15,8 @@ services:
       - /dev/dri:/dev/dri
     ports:
       - 8096:8096
+    networks:
+      - traefik
     restart: unless-stopped
     labels:
       - homepage.group=Media
@@ -22,3 +24,33 @@ services:
       - homepage.icon=jellyfin.png
       - homepage.showStats=true
       - homepage.href=http://192.168.2.100:8096
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.fahimshahreer.com`)"
+      - "traefik.http.routers.jellyfin.entrypoints=web"
+
+  jellyseerr: 
+    image: fallenbagel/jellyseerr:latest 
+    container_name: jellyseerr 
+    hostname: jellyseerr 
+    user: 1001:1001
+    environment: 
+      - TZ=America/Toronto 
+    ports: 
+      - 5056:5055 
+    networks:
+      - traefik
+    volumes: 
+      - /mnt/docker/jellyseerr:/app/config 
+    restart: unless-stopped 
+    labels:
+      - "homepage.group=Arrs"
+      - "homepage.name=Jellyseerr"
+      - "homepage.icon=sh-jellyseerr"
+      - "homepage.href=http://192.168.2.100:5056"
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.fahimshahreer.com`)"
+      - "traefik.http.routers.jellyseerr.entrypoints=web"
+
+networks:
+  traefik:
+    external: true

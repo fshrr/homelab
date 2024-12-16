@@ -2,6 +2,12 @@ include:
   - torrent.yml
   - usenet.yml
 
+networks:
+  arr:
+    external: true
+  arr-overseerr:
+    external: true
+
 services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -13,6 +19,8 @@ services:
       - /mnt/docker/prowlarr:/config
     ports:
       - 9696:9696
+    networks:
+      - arr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -32,6 +40,9 @@ services:
       - /mnt/docker/radarr:/config
       - /mnt/nas/media/movies:/movies
       - /mnt/downloads:/downloads
+    networks:
+      - arr
+      - arr-overseerr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -51,6 +62,9 @@ services:
       - /mnt/downloads:/downloads
     ports:
       - 8989:8989
+    networks:
+      - arr
+      - arr-overseerr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -70,6 +84,8 @@ services:
       - /mnt/nas/media/tv:/tv
     ports:
       - 6767:6767
+    networks:
+      - arr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -87,3 +103,5 @@ services:
       - TZ=America/Toronto
       - PUID=1001
       - PGID=1001
+    networks:
+      - arr

@@ -1,8 +1,7 @@
 services:
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.2
     container_name: traefik
-    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     command:
@@ -11,24 +10,26 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
+    networks:
+      - traefik
     ports:
       - 80:80
       - 443:443
       - 8080:8080
       # - 443:443/tcp # Uncomment if you want HTTP3
       # - 443:443/udp # Uncomment if you want HTTP3
-    environment:
-      CF_DNS_API_TOKEN: ${TRAEFIK_CF_DNS_API_TOKEN} # if using .env
+    # environment:
+      # CF_DNS_API_TOKEN: ${TRAEFIK_CF_DNS_API_TOKEN} # if using .env
       # TRAEFIK_DASHBOARD_CREDENTIALS: ${TRAEFIK_DASHBOARD_CREDENTIALS}
     volumes:
       # - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yml:/traefik.yml:ro
+      # - ./traefik.yml:/traefik.yml:ro
       # - ${APPDATA_PATH}/traefik/acme.json:/acme.json
       # - ./data/config.yml:/config.yml:ro # for adding non docker hosts
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
+    # labels:
+      # - "traefik.enable=true"
+      # - "traefik.http.routers.traefik.entrypoints=http"
       # - "traefik.http.routers.traefik.rule=Host(`traefik-dashboard.homelab.fahimshahreer.com`)"
       # - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_DASHBOARD_CREDENTIALS}"
       # - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
@@ -42,8 +43,23 @@ services:
       # - "traefik.http.routers.traefik-secure.tls.domains[0].main=homelab.fahimshahreer.com"
       # - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.homelab.fahimshahreer.com"
       # - "traefik.http.routers.traefik-secure.service=api@internal"
+    restart: unless-stopped
+    labels:
+      - homepage.group=Management
+      - homepage.name=Traefik
+      - homepage.icon=traefik.png
+      - homepage.href=http://192.168.2.100:8080
 
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.fahimshahreer.com`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      
 networks:
-  default:
-    name: proxy
-    external: true
+    traefik:
+      external: true
