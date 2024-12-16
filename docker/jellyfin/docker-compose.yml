@@ -9,8 +9,8 @@ services:
       - JELLYFIN_PublishedServerUrl=http://192.168.0.5 #optional
     volumes:
       - /mnt/docker/jellyfin:/config
-      - /mnt/nas/media/movies:/movies
-      - /mnt/nas/media/tv:/tv
+      - /mnt/nas/media/movies:/movies:ro
+      - /mnt/nas/media/tv:/tv:ro
     devices:
       - /dev/dri:/dev/dri
     ports:
