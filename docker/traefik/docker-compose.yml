@@ -1,3 +1,9 @@
+networks:
+  traefik:
+    external: true
+  docker-socket-proxy:
+    external: true
+
 services:
   traefik:
     image: traefik:v3.2
@@ -6,6 +12,7 @@ services:
       - no-new-privileges:true
     networks:
       - traefik
+      - docker-socket-proxy
     ports:
       - 80:80
       - 443:443
@@ -17,29 +24,30 @@ services:
       # TRAEFIK_DASHBOARD_CREDENTIALS: ${TRAEFIK_DASHBOARD_CREDENTIALS}
     volumes:
       # - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # - ./traefik.yml:/traefik.yml:ro
       - /mnt/docker/traefik/letsencrypt:/letsencrypt
-      # - ./data/config.yml:/config.yml:ro # for adding non docker hosts
     restart: unless-stopped
     command:
       - "--log.level=DEBUG"
       - "--api.insecure=true"
+      ## docker provider
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=docker-socket-proxy"
+      - "--providers.docker.endpoint=tcp://docker-socket-proxy:2375"
+      ## entrypoints
       - "--entryPoints.web.address=:80"
       - "--entryPoints.websecure.address=:443"
-      # create certresolver using cf dns
+      ## create certresolver using cf dns
       - "--certificatesresolvers.cf-dns-resolver.acme.dnschallenge=true"
       - "--certificatesresolvers.cf-dns-resolver.acme.dnschallenge.provider=cloudflare"
-      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" # uncomment for debugging
+      ##- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" # uncomment for debugging
       - "--certificatesresolvers.cf-dns-resolver.acme.email=fahim.shahreer95@gmail.com"
       - "--certificatesresolvers.cf-dns-resolver.acme.storage=/letsencrypt/acme.json"
-      # Add cf-dns-resolver as default certresolver for all services. Also enables TLS and no need to specify on individual services
+      ## Add cf-dns-resolver as default certresolver for all services. Also enables TLS and no need to specify on individual services
       - --entrypoints.websecure.http.tls.certresolver=cf-dns-resolver
       - --entrypoints.websecure.http.tls.domains[0].main=fahimshahreer.com
       - --entrypoints.websecure.http.tls.domains[0].sans=*.fahimshahreer.com
-      # redirect all http traffic to https
+      ## redirect all http traffic to https
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --entrypoints.web.http.redirections.entrypoint.permanent=true
@@ -59,6 +67,3 @@ services:
       - "traefik.http.routers.whoami.rule=Host(`whoami.fahimshahreer.com`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       
-networks:
-  traefik:
-    external: true
