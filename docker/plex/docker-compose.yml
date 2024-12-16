@@ -16,8 +16,8 @@ services:
       - PLEX_CLAIM=claim-sFw4K3nnQ3xuV22jY88F
     volumes:
       - /mnt/docker/plex:/config
-      - /mnt/nas/media/tv:/tv
-      - /mnt/nas/media/movies:/movies
+      - /mnt/nas/media/tv:/tv:ro
+      - /mnt/nas/media/movies:/movies:ro
     ports:
       - 32400:32400  
       # - 1900:1900
