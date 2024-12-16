@@ -6,9 +6,9 @@ services:
     security_opt:
       - no-new-privileges:true
     network_mode: 'host'
-    environment:
-      - PUID=1001
-      - PGID=1001
+    extends:
+      file: ../base.yml
+      service: base
     volumes:
-      - ./config.json:/config.json:ro
+      - /mnt/docker/cloudflare-ddns/config.json:/config.json:ro
     restart: unless-stopped
