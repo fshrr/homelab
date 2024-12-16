@@ -44,7 +44,7 @@ services:
       - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
       - "traefik.enable=true"
       - "traefik.http.routers.plex.rule=Host(`plex.fahimshahreer.com`)"
-      - "traefik.http.routers.plex.entrypoints=web"
+      - "traefik.http.routers.plex.entrypoints=websecure"
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
@@ -86,4 +86,4 @@ services:
       - homepage.href=http://192.168.2.100:5055
       - "traefik.enable=true"
       - "traefik.http.routers.overseerr.rule=Host(`overseerr.fahimshahreer.com`)"
-      - "traefik.http.routers.overseerr.entrypoints=web"
+      - "traefik.http.routers.overseerr.entrypoints=websecure"

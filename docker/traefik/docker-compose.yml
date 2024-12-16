@@ -4,12 +4,6 @@ services:
     container_name: traefik
     security_opt:
       - no-new-privileges:true
-    command:
-      #- "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entryPoints.web.address=:80"
     networks:
       - traefik
     ports:
@@ -18,32 +12,37 @@ services:
       - 8080:8080
       # - 443:443/tcp # Uncomment if you want HTTP3
       # - 443:443/udp # Uncomment if you want HTTP3
-    # environment:
-      # CF_DNS_API_TOKEN: ${TRAEFIK_CF_DNS_API_TOKEN} # if using .env
+    environment:
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN} # if using .env
       # TRAEFIK_DASHBOARD_CREDENTIALS: ${TRAEFIK_DASHBOARD_CREDENTIALS}
     volumes:
       # - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # - ./traefik.yml:/traefik.yml:ro
-      # - ${APPDATA_PATH}/traefik/acme.json:/acme.json
+      - /mnt/docker/traefik/letsencrypt:/letsencrypt
       # - ./data/config.yml:/config.yml:ro # for adding non docker hosts
-    # labels:
-      # - "traefik.enable=true"
-      # - "traefik.http.routers.traefik.entrypoints=http"
-      # - "traefik.http.routers.traefik.rule=Host(`traefik-dashboard.homelab.fahimshahreer.com`)"
-      # - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_DASHBOARD_CREDENTIALS}"
-      # - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
-      # - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-      # - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
-      # - "traefik.http.routers.traefik-secure.entrypoints=https"
-      # - "traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.homelab.fahimshahreer.com`)"
-      # - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
-      # - "traefik.http.routers.traefik-secure.tls=true"
-      # - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
-      # - "traefik.http.routers.traefik-secure.tls.domains[0].main=homelab.fahimshahreer.com"
-      # - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.homelab.fahimshahreer.com"
-      # - "traefik.http.routers.traefik-secure.service=api@internal"
     restart: unless-stopped
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      # create certresolver using cf dns
+      - "--certificatesresolvers.cf-dns-resolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.cf-dns-resolver.acme.dnschallenge.provider=cloudflare"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" # uncomment for debugging
+      - "--certificatesresolvers.cf-dns-resolver.acme.email=fahim.shahreer95@gmail.com"
+      - "--certificatesresolvers.cf-dns-resolver.acme.storage=/letsencrypt/acme.json"
+      # Add cf-dns-resolver as default certresolver for all services. Also enables TLS and no need to specify on individual services
+      - --entrypoints.websecure.http.tls.certresolver=cf-dns-resolver
+      - --entrypoints.websecure.http.tls.domains[0].main=fahimshahreer.com
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.fahimshahreer.com
+      # redirect all http traffic to https
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
     labels:
       - homepage.group=Management
       - homepage.name=Traefik
@@ -58,8 +57,8 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`whoami.fahimshahreer.com`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
       
 networks:
-    traefik:
-      external: true
+  traefik:
+    external: true

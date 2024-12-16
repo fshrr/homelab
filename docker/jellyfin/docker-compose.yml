@@ -26,7 +26,7 @@ services:
       - homepage.href=http://192.168.2.100:8096
       - "traefik.enable=true"
       - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.fahimshahreer.com`)"
-      - "traefik.http.routers.jellyfin.entrypoints=web"
+      - "traefik.http.routers.jellyfin.entrypoints=websecure"
 
   jellyseerr: 
     image: fallenbagel/jellyseerr:latest 
@@ -49,7 +49,7 @@ services:
       - "homepage.href=http://192.168.2.100:5056"
       - "traefik.enable=true"
       - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.fahimshahreer.com`)"
-      - "traefik.http.routers.jellyseerr.entrypoints=web"
+      - "traefik.http.routers.jellyseerr.entrypoints=websecure"
 
 networks:
   traefik:
