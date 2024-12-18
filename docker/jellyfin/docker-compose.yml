@@ -1,3 +1,9 @@
+networks:
+  traefik:
+    external: true
+  arr-seerr:
+    external: true
+
 services:
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -25,32 +31,35 @@ services:
       - homepage.showStats=true
       - homepage.href=http://192.168.2.100:8096
       - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.fahimshahreer.com`)"
+      - "traefik.http.routers.jellyfin.rule=Host(`watch.fahimshahreer.com`)"
       - "traefik.http.routers.jellyfin.entrypoints=websecure"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+      - "traefik.docker.network=traefik"
 
   jellyseerr: 
-    image: fallenbagel/jellyseerr:latest 
+    image: ghcr.io/hotio/jellyseerr
     container_name: jellyseerr 
     hostname: jellyseerr 
-    user: 1001:1001
-    environment: 
-      - TZ=America/Toronto 
+    extends:
+      file: ../base.yml
+      service: base
+    environment:
+      - UMASK=002
     ports: 
-      - 5056:5055 
+      - 5055:5055 
     networks:
       - traefik
+      - arr-seerr
     volumes: 
       - /mnt/docker/jellyseerr:/app/config 
     restart: unless-stopped 
     labels:
       - "homepage.group=Arrs"
       - "homepage.name=Jellyseerr"
-      - "homepage.icon=sh-jellyseerr"
-      - "homepage.href=http://192.168.2.100:5056"
+      - "homepage.icon=jellyseerr.png"
+      - "homepage.href=http://192.168.2.100:5055"
       - "traefik.enable=true"
-      - "traefik.http.routers.jellyseerr.rule=Host(`jellyseerr.fahimshahreer.com`)"
+      - "traefik.http.routers.jellyseerr.rule=Host(`request.fahimshahreer.com`)"
       - "traefik.http.routers.jellyseerr.entrypoints=websecure"
-
-networks:
-  traefik:
-    external: true
+      - "traefik.http.services.jellyseerr.loadbalancer.server.port=5055"
+      - "traefik.docker.network=traefik"
