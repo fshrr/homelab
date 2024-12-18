@@ -1,7 +1,7 @@
 services:
   docker-socket-proxy:
     container_name: docker-socket-proxy
-    image: tecnativa/docker-socket-proxy
+    image: tecnativa/docker-socket-proxy:latest
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
@@ -16,24 +16,24 @@ services:
       - VERSION=1
       - AUTH=0
       - SECRETS=0
-      - POST=0 # Watchtower
+      - POST=1 # Watchtower
       - BUILD=0
       - COMMIT=0
       - CONFIGS=0
       - CONTAINERS=1 # Traefik, portainer
       - DISTRIBUTION=0
       - EXEC=0
-      - IMAGES=0 # Portainer
-      - INFO=0 # Portainer
-      - NETWORKS=0 # Portainer
+      - IMAGES=1 # Portainer
+      - INFO=1 # Portainer
+      - NETWORKS=1 # Portainer
       - NODES=0
       - PLUGINS=0
-      - SERVICES=0 # Portainer
+      - SERVICES=1 # Portainer
       - SESSION=0
       - SWARM=0
       - SYSTEM=0
-      - TASKS=0 # Portainer
-      - VOLUMES=0 # Portainer
+      - TASKS=1 # Portainer
+      - VOLUMES=1 # Portainer
 
 networks:
   docker-socket-proxy:
