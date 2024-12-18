@@ -5,7 +5,7 @@ include:
 networks:
   arr:
     external: true
-  arr-overseerr:
+  arr-seerr:
     external: true
 
 services:
@@ -42,7 +42,7 @@ services:
       - /mnt/downloads:/downloads
     networks:
       - arr
-      - arr-overseerr
+      - arr-seerr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
@@ -64,7 +64,7 @@ services:
       - 8989:8989
     networks:
       - arr
-      - arr-overseerr
+      - arr-seerr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
