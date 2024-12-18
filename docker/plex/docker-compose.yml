@@ -42,9 +42,9 @@ services:
       - homepage.widget.type=plex
       - homepage.widget.url=http://192.168.2.100:32400
       - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
-      - "traefik.enable=true"
-      - "traefik.http.routers.plex.rule=Host(`plex.fahimshahreer.com`)"
-      - "traefik.http.routers.plex.entrypoints=websecure"
+      # - "traefik.enable=true"
+      # - "traefik.http.routers.plex.rule=Host(`plex.fahimshahreer.com`)"
+      # - "traefik.http.routers.plex.entrypoints=websecure"
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
@@ -84,6 +84,6 @@ services:
       - homepage.name=Overseerr
       - homepage.icon=overseerr.png
       - homepage.href=http://192.168.2.100:5055
-      - "traefik.enable=true"
-      - "traefik.http.routers.overseerr.rule=Host(`overseerr.fahimshahreer.com`)"
-      - "traefik.http.routers.overseerr.entrypoints=websecure"
+      # - "traefik.enable=true"
+      # - "traefik.http.routers.overseerr.rule=Host(`overseerr.fahimshahreer.com`)"
+      # - "traefik.http.routers.overseerr.entrypoints=websecure"
