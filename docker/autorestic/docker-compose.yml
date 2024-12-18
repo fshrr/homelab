@@ -1,0 +1,13 @@
+services:
+  autorestic:
+    image: cupcakearmy/autorestic
+    container_name: autorestic
+    environment:
+      - TZ=America/Toronto
+    volumes:
+      - /mnt/docker:/docker-mounts
+      - /mnt/docker/autorestic:/root/.config/autorestic
+    restart: "unless-stopped"
+    command: tail -f /dev/null
+      # - autorestic check 
+      # - autorestic backup -va 
