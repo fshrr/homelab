@@ -1,6 +1,19 @@
+volumes:
+  database:
+    driver: local
+  redis:
+    driver: local
+
+networks:
+  traefik:
+    external: true
+  authentik:
+    driver: bridge
+
 services:
   postgresql:
     image: docker.io/library/postgres:16-alpine
+    container_name: authentik-postgres
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
@@ -8,6 +21,8 @@ services:
       interval: 30s
       retries: 5
       timeout: 5s
+    networks:
+      - authentik
     volumes:
       - database:/var/lib/postgresql/data
     environment:
@@ -16,9 +31,13 @@ services:
       POSTGRES_DB: ${PG_DB:-authentik}
     env_file:
       - .env
+
   redis:
     image: docker.io/library/redis:alpine
+    container_name: authentik-redis
     command: --save 60 1 --loglevel warning
+    networks:
+      - authentik
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
@@ -28,10 +47,15 @@ services:
       timeout: 3s
     volumes:
       - redis:/data
+
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.5}
+    container_name: authentik-server
     restart: unless-stopped
     command: server
+    networks:
+      - authentik
+      - traefik
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
@@ -43,18 +67,34 @@ services:
       - /mnt/docker/authentik/custom-templates:/templates
     env_file:
       - .env
-    ports:
-      - "${COMPOSE_PORT_HTTP:-9000}:9000"
-      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    ## Ports not exposed to use traefik instead
+    # ports:
+    #   - "${COMPOSE_PORT_HTTP:-9000}:9000"
+    #   - "${COMPOSE_PORT_HTTPS:-9444}:9444"
     depends_on:
       postgresql:
         condition: service_healthy
       redis:
         condition: service_healthy
+    labels:
+      - homepage.group=Management
+      - homepage.name=Authentik
+      - homepage.icon=authentik.png
+      - homepage.href=http://192.168.2.100:9000
+      - "traefik.enable=true"
+      - "traefik.http.routers.authentik.rule=Host(`auth.fshrr.com`)"
+      - "traefik.http.routers.authentik.entrypoints=websecure"
+      - "traefik.http.routers.authentik.service=authentik"
+      - "traefik.http.services.authentik.loadbalancer.server.port=9000"
+      - "traefik.docker.network=traefik"
+
   worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.5}
+    container_name: authentik-worker
     restart: unless-stopped
     command: worker
+    networks:
+      - authentik
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
@@ -67,9 +107,9 @@ services:
     # Removing `user: root` also prevents the worker from fixing the permissions
     # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
     # (1000:1000 by default)
-    user: root
+    user: 1001:1001
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - /var/run/docker.sock:/var/run/docker.sock
       - /mnt/docker/authentik/media:/media
       - /mnt/docker/authentik/certs:/certs
       - /mnt/docker/authentik/custom-templates:/templates
@@ -81,8 +121,3 @@ services:
       redis:
         condition: service_healthy
 
-volumes:
-  database:
-    driver: local
-  redis:
-    driver: local
