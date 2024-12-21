@@ -7,6 +7,7 @@ services:
       - NET_ADMIN
     environment:
       - NB_SETUP_KEY=${NB_SETUP_KEY}
+      - NB_ALLOW_SERVER_SSH=true
     volumes:
       - netbird-client:/etc/netbird
     restart: unless-stopped
