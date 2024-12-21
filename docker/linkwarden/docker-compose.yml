@@ -1,0 +1,45 @@
+networks:
+  traefik:
+    external: true
+  linkwarden:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: linkwarden-postgres
+    env_file: .env
+    restart: always
+    volumes:
+      - /mnt/docker/pgdata:/var/lib/postgresql/data
+    networks:
+      - linkwarden
+
+  linkwarden:
+    image: ghcr.io/linkwarden/linkwarden:latest
+    container_name: linkwarden
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      - NEXTAUTH_SECRET=out openssl rand -base64 32
+      - NEXTAUTH_URL=http://linkwarden:3000
+    restart: always
+    networks:
+      - traefik
+      - linkwarden
+    ports:
+      - 3001:3000
+    volumes:
+      - /mnt/docker/linkwarden:/data/data
+    depends_on:
+      - postgres
+    labels:
+      - homepage.group=Personal
+      - homepage.name=Linkwarden
+      - homepage.icon=linkwarden.png
+      - homepage.showStats=true
+      - homepage.href=http://192.168.2.100:3001
+      - "traefik.enable=true"
+      - "traefik.http.routers.linkwarden.rule=Host(`links.fshrr.com`)"
+      - "traefik.http.routers.linkwarden.entrypoints=websecure"
+      - "traefik.http.services.linkwarden.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik"
