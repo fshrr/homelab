@@ -30,6 +30,8 @@ services:
       - NET_ADMIN
     ports:
       - 9090:9090
+    devices:
+      - /dev/net/tun:/dev/net/tun
     networks:
       - arr
     environment:
