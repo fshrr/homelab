@@ -1,0 +1,62 @@
+networks:
+  traefik:
+    external: true
+  hoarder:
+
+services:
+  web:
+    image: ghcr.io/hoarder-app/hoarder:${HOARDER_VERSION:-release}
+    container_name: hoarder_web
+    volumes:
+      - /mnt/docker/hoarder/web:/data
+    env_file:
+      - .env
+    networks:
+      - traefik
+      - hoarder
+    ports:
+      - 3001:3000
+    environment:
+      MEILI_ADDR: http://meilisearch:7700
+      BROWSER_WEB_URL: http://chrome:9222
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DATA_DIR: /data
+    restart: unless-stopped
+    labels:
+      - homepage.group=Personal
+      - homepage.name=Hoarder
+      - homepage.icon=hoarder.png
+      - homepage.href=http://192.168.2.100:3001
+      - "traefik.enable=true"
+      - "traefik.http.routers.hoarder.rule=Host(`links.fshrr.com`)"
+      - "traefik.http.routers.hoarder.entrypoints=websecure"
+      - "traefik.http.routers.hoarder.service=hoarder"
+      - "traefik.http.services.hoarder.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik"
+
+  chrome:
+    image: gcr.io/zenika-hub/alpine-chrome:123
+    container_name: hoarder_chrome
+    networks:
+      - hoarder
+    restart: unless-stopped
+    command:
+      - --no-sandbox
+      - --disable-gpu
+      - --disable-dev-shm-usage
+      - --remote-debugging-address=0.0.0.0
+      - --remote-debugging-port=9222
+      - --hide-scrollbars
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.11.1
+    container_name: hoarder_meilisearch
+    networks:
+      - hoarder
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+    volumes:
+      - /mnt/docker/hoarder/meilisearch:/meili_data
