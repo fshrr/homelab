@@ -24,7 +24,7 @@ services:
       - homepage.group=Personal
       - homepage.name=Actual Budget
       - homepage.icon=actual.png
-      - homepage.href=http://192.168.2.100:5006
+      - homepage.href=https://budget.fshrr.com
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
       - "traefik.http.routers.actualbudget.rule=Host(`budget.fshrr.com`)"
