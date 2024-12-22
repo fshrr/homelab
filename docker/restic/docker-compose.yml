@@ -6,12 +6,14 @@ services:
     environment:
       RUN_ON_STARTUP: "true"
       BACKUP_CRON: "0 6 * * *" # daily at 6am
-      RESTIC_REPOSITORY: /restic
-      RESTIC_PASSWORD: MY_SUPER_LONG_PASSWORD
-      RESTIC_BACKUP_SOURCES: /mnt/volumes
+      RESTIC_REPOSITORY: rclone:mega:/bromine
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      RESTIC_BACKUP_SOURCES: /docker-volumes
       RESTIC_COMPRESSION: auto 
       RESTIC_BACKUP_ARGS: >-
         --tag bromine-restic 
+        --exclude */cache/*
+        --exclude-caches
         --verbose
       RESTIC_FORGET_ARGS: >-
         --keep-last 5
@@ -20,9 +22,10 @@ services:
         --keep-monthly 3
       TZ: America/Toronto
     volumes:
-      - /home/ubuntu/truenas/Restic-Proxmox-Backup:/restic #change the left hand side to where you want to store the backups. As you can see I'm storing it on my NAS that is mounted to the host /home/truenas
-      - /home/ubuntu/truenas/Restic-Proxmox-Backup/tmp-for-restore:/tmp-for-restore #USE THIS FOLDER FOR RESTORE - CAN VIEW EACH CONTAINER
-      - /home/ubuntu/docker:/mnt/volumes:ro
+      # - /home/ubuntu/truenas/Restic-Proxmox-Backup:/restic #change the left hand side to where you want to store the backups. As you can see I'm storing it on my NAS that is mounted to the host /home/truenas
+      - /mnt/backup-restore:/tmp-for-restore #USE THIS FOLDER FOR RESTORE - CAN VIEW EACH CONTAINER
+      - /mnt/docker:/docker-volumes:ro
+      - ./rclone.conf:/run/secrets/rclone.conf:ro
     security_opt:
       - no-new-privileges:true
 
@@ -33,8 +36,8 @@ services:
     environment:
       RUN_ON_STARTUP: "true"
       PRUNE_CRON: "0 7 * * * *"
-      RESTIC_REPOSITORY: /restic
-      RESTIC_PASSWORD: USE_SAME_PASSWORD_AS_ABOVE
+      RESTIC_REPOSITORY: rclone:mega:/bromine
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
       TZ: America/Toronto
     security_opt:
       - no-new-privileges:true
@@ -48,8 +51,8 @@ services:
       CHECK_CRON: "0 15 5 * * *"
       RESTIC_CHECK_ARGS: >-
         --read-data-subset=10%
-      RESTIC_REPOSITORY: /restic
-      RESTIC_PASSWORD: USE_SAME_PASSWORD_AS_ABOVE
+      RESTIC_REPOSITORY: rclone:mega:/bromine
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
       TZ: America/Toronto
     security_opt:
       - no-new-privileges:true
