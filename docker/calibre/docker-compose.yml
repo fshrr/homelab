@@ -1,0 +1,80 @@
+networks:
+  traefik:
+    external: true
+
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    security_opt:
+      - seccomp:unconfined #optional
+    extends:
+      file: ../base.yml
+      service: base
+    environment:
+      # - CUSTOM_USER={CALIBRE_USER}
+      # - PASSWORD={CALIBRE_PASSWORD}
+      # - CLI_ARGS= #optional
+      CALIBRE_OVERRIDE_DATABASE_PATH={CALIBRE_OVERRIDE_DATABASE_PATH}
+    volumes:
+      - /mnt/docker/calibre:/config
+      - /mnt/nas/media/books:/books
+    ports:
+      - 8084:8080
+      - 8085:8181
+      - 8086:8081
+    restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=Calibre
+      - homepage.icon=calibre.png
+      - homepage.showStats=false
+      - homepage.href=http://192.168.2.100:8084
+      # - "traefik.enable=true"
+      # - "traefik.http.routers.calibre.rule=Host(`calibre.fshrr.com`)"
+      # - "traefik.http.routers.calibre.entrypoints=websecure"
+      # - "traefik.http.services.calibre.loadbalancer.server.port=8096"
+      # - "traefik.docker.network=traefik"
+
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    extends:
+      file: ../base.yml
+      service: base
+    environment:
+      - DOCKER_MODS=linuxserver/mods:universal-calibre #optional
+      # - OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
+    volumes:
+      - /mnt/docker/calibre-web:/config
+      - /mnt/nas/media/books:/books
+    ports:
+      - 8083:8083
+    restart: unless-stopped
+    labels:
+      - homepage.group=Media
+      - homepage.name=Calibre Web
+      - homepage.icon=calibre-web.png
+      - homepage.showStats=false
+      - homepage.href=http://192.168.2.100:8083
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    extends:
+      file: ../base.yml
+      service: base
+    volumes:
+      - /mnt/docker/readarr:/config
+      - /mnt/nas/media/books:/books
+      - /mnt/downloads:/downloads
+    ports:
+      - 8787:8787
+    restart: unless-stopped
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Readarr
+      - homepage.icon=readarr.png
+      - homepage.showStats=false
+      - homepage.href=http://192.168.2.100:8787
+
