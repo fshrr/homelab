@@ -1,0 +1,46 @@
+volumes:
+  grafana-data:
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    user: 1001:1001
+    volumes:
+      - /mnt/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /mnt/docker/prometheus/data:/prometheus
+    ports:
+      - 9080:9090
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Prometheus
+      - homepage.icon=prometheus.png
+      - homepage.href=http://192.168.2.100:9080
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - 3080:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    labels:
+      - homepage.group=Monitoring
+      - homepage.name=Grafana
+      - homepage.icon=grafana.png
+      - homepage.href=http://192.168.2.100:3080
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
