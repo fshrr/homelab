@@ -1,50 +1,55 @@
 networks:
-  arr-overseerr:
+  arr-seerr:
     external: true
   traefik:
     external: true
 
 services:
   plex:
-    image: lscr.io/linuxserver/plex:latest
+    image: plexinc/pms-docker:latest
     container_name: plex
-    extends:
-      file: ../base.yml
-      service: base
-    environment:
-      - VERSION=docker
-      - PLEX_CLAIM=claim-sFw4K3nnQ3xuV22jY88F
-    volumes:
-      - /mnt/docker/plex:/config
-      - /mnt/nas/media/tv:/tv:ro
-      - /mnt/nas/media/movies:/movies:ro
-    ports:
-      - 32400:32400  
-      # - 1900:1900
-      # - 5353:5353
-      # - 8324:8324
-      # - 32410:32410
-      # - 32412:32412
-      # - 32413:32413
-      # - 32414:32414
-      # - 32469:32469
     networks:
       - traefik
-    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     devices:
-      - /dev/dri:/dev/dri
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    ports:
+      - "32400:32400/tcp"
+      - "3005:3005/tcp"
+      - "8324:8324/tcp"
+      - "32469:32469/tcp"
+      - "1900:1900/udp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+      #- "33400:33400/tcp"
+    volumes:
+      - /mnt/docker/plex:/config
+      - /mnt/nas/media:/nas
+      # - /dev/shm:/data/transcode # Offload transcoding to RAM if you have enough RAM
+    environment:
+      TZ: "America/Toronto"
+      HOSTNAME: "Bromine"
+      # PLEX_CLAIM_FILE: /run/secrets/plex_claim
+      PLEX_CLAIM: "claim-4_XXTxwdGpeK4zvgJ5H4"
+      PLEX_UID: 1001
+      PLEX_GID: 1001
+      # ADVERTISE_IP: "http://$MEDIASERVER_IP:32400/,http://$ZEROTIER_IP_MEDIASERVER:32400/,https://proxplex.$DOMAINNAME_HS"
+      ALLOWED_NETWORKS: 192.168.2.0/24
+    restart: unless-stopped
     labels:
       - homepage.group=Media
       - homepage.name=Plex
       - homepage.icon=plex.png
       - homepage.showStats=true
       - homepage.href=http://192.168.2.100:32400
-      - homepage.widget.type=plex
-      - homepage.widget.url=http://192.168.2.100:32400
-      - homepage.widget.key=GWUxGJgdnUzPLHT9HCwV
-      # - "traefik.enable=true"
-      # - "traefik.http.routers.plex.rule=Host(`plex.fahimshahreer.com`)"
-      # - "traefik.http.routers.plex.entrypoints=websecure"
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex.rule=Host(`watch.fshrr.com`)"
+      - "traefik.http.routers.plex.entrypoints=websecure"
+      - "traefik.http.services.plex.loadbalancer.server.port=32400"
+      - "traefik.docker.network=traefik"
 
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
@@ -60,10 +65,15 @@ services:
       - traefik
     restart: unless-stopped
     labels:
-      - homepage.group=Arrs
+      - homepage.group=Monitoring
       - homepage.name=Tautulli
       - homepage.icon=tautulli.png
       - homepage.href=http://192.168.2.100:8181
+      - "traefik.enable=true"
+      - "traefik.http.routers.tautulli.rule=Host(`watchstats.fshrr.com`)"
+      - "traefik.http.routers.tautulli.entrypoints=websecure"
+      - "traefik.http.services.tautulli.loadbalancer.server.port=8181"
+      - "traefik.docker.network=traefik"
 
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
@@ -74,16 +84,34 @@ services:
     volumes:
       - /mnt/docker/overseerr:/config
     ports:
-      - 5055:5055
+      - 5056:5055
     networks:
       - traefik
-      - arr-overseerr
+      - arr-seerr
     restart: unless-stopped
     labels:
       - homepage.group=Arrs
       - homepage.name=Overseerr
       - homepage.icon=overseerr.png
-      - homepage.href=http://192.168.2.100:5055
-      # - "traefik.enable=true"
-      # - "traefik.http.routers.overseerr.rule=Host(`overseerr.fahimshahreer.com`)"
-      # - "traefik.http.routers.overseerr.entrypoints=websecure"
+      - homepage.href=http://192.168.2.100:5056
+      - "traefik.enable=true"
+      - "traefik.http.routers.overseerr.rule=Host(`request.fshrr.com`)"
+      - "traefik.http.routers.overseerr.entrypoints=websecure"
+      - "traefik.http.services.overseerr.loadbalancer.server.port=5055"
+      - "traefik.docker.network=traefik"
+
+  kometa:
+    image: lscr.io/linuxserver/kometa:latest
+    container_name: kometa
+    extends:
+      file: ../base.yml
+      service: base
+    environment:
+      - KOMETA_CONFIG=/mnt/docker/kometa
+      - KOMETA_TIME=03:00
+      - KOMETA_RUN=False #optional
+      - KOMETA_TEST=False #optional
+      - KOMETA_NO_MISSING=False #optional
+    volumes:
+      - /mnt/docker/kometa:/config
+    restart: unless-stopped
