@@ -1,0 +1,74 @@
+# radarr.yml
+networks:
+  arr:
+    external: true
+  arr-seerr:
+    external: true
+
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    extends:
+      file: ../base.yml
+      service: base
+    ports:
+      - 7871:7878
+    volumes:
+      - ${APPDATA_PATH}/radarr:/config
+      - ${MOVIES_PATH}:/movies
+      - ${MOVIES_ANIME_PATH}:/movies_anime
+      - ${DOWNLOADS_PATH}:/downloads
+    networks:
+      - arr
+      - arr-seerr
+    restart: unless-stopped
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Radarr
+      - homepage.icon=radarr.png
+      - homepage.href=http://192.168.2.100:7871
+
+  radarr_4k:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr_4k
+    extends:
+      file: ../base.yml
+      service: base
+    ports:
+      - 7872:7878
+    volumes:
+      - ${APPDATA_PATH}/radarr_4k:/config
+      - ${MOVIES_4k_PATH}:/movies_4k
+      - ${DOWNLOADS_PATH}:/downloads
+    networks:
+      - arr
+      - arr-seerr
+    restart: unless-stopped
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Radarr 4k
+      - homepage.icon=radarr.png
+      - homepage.href=http://192.168.2.100:7872
+
+  # radarr_anime:
+  #   image: lscr.io/linuxserver/radarr:latest
+  #   container_name: radarr_anime
+  #   extends:
+  #     file: ../base.yml
+  #     service: base
+  #   ports:
+  #     - 7873:7878
+  #   volumes:
+  #     - ${APPDATA_PATH}/radarr_anime:/config
+  #     - ${MOVIES_ANIME_PATH}:/movies_anime
+  #     - ${DOWNLOADS_PATH}:/downloads
+  #   networks:
+  #     - arr
+  #     - arr-seerr
+  #   restart: unless-stopped
+  #   labels:
+  #     - homepage.group=Arrs
+  #     - homepage.name=Radarr Anime
+  #     - homepage.icon=radarr.png
+  #     - homepage.href=http://192.168.2.100:7873

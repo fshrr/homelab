@@ -1,25 +1,9 @@
-services:
-  flaresolverr:
-    image: flaresolverr/flaresolverr:latest
-    container_name: flaresolverr
-    extends:
-      file: ../base.yml
-      service: base
-    environment:
-      - LOG_LEVEL=info
-      - LOG_HTML=false
-      - CAPTCHA_SOLVER=none
-    ports:
-      - 8191:8191
-    networks:
-      - arr
-    restart: unless-stopped
-    labels:
-      - homepage.group=Arrs
-      - homepage.name=flaresolverr
-      - homepage.icon=flaresolverr.png
-      - homepage.href=http://192.168.2.100:8191
+# torrent.yml
+networks:
+  arr:
+    external: true
 
+services:
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
@@ -39,7 +23,7 @@ services:
       - OPENVPN_USER=nhnwfixvdiio
       - OPENVPN_PASSWORD=p!2o7L#2668%fx
     volumes:
-      - /mnt/docker/gluetun:/gluetun
+      - ${APPDATA_PATH}/gluetun:/gluetun
       # - ./client.key:/gluetun/client.key
       # - ./client.crt:/gluetun/client.crt
     restart: unless-stopped
@@ -53,8 +37,8 @@ services:
     environment:
       - WEBUI_PORT=9090
     volumes:
-      - /mnt/docker/qbittorrent:/config
-      - /mnt/downloads:/downloads 
+      - ${APPDATA_PATH}/qbittorrent:/config
+      - ${DOWNLOADS_PATH}:/downloads 
     depends_on:
       - gluetun
     network_mode: container:gluetun
@@ -64,3 +48,24 @@ services:
       - homepage.name=qbittorrent
       - homepage.icon=qbittorrent.png
       - homepage.href=http://192.168.2.100:9090
+
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    extends:
+      file: ../base.yml
+      service: base
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+    ports:
+      - 8191:8191
+    networks:
+      - arr
+    restart: unless-stopped
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Flaresolverr
+      - homepage.icon=flaresolverr.png
+      - homepage.href=http://192.168.2.100:8191

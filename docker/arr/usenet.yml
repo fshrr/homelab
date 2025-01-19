@@ -1,3 +1,8 @@
+# usenet.yml
+networks:
+  arr:
+    external: true
+
 services:
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
@@ -6,9 +11,9 @@ services:
       file: ../base.yml
       service: base
     volumes:
-      - /mnt/docker/sabnzbd:/config
-      - /mnt/downloads:/downloads
-      - /mnt/downloads/incomplete:/incomplete-downloads
+      - ${APPDATA_PATH}/sabnzbd:/config
+      - ${DOWNLOADS_PATH}:/downloads
+      - ${DOWNLOADS_PATH}/incomplete:/incomplete
     ports:
       - 8081:8081
     networks:

@@ -1,0 +1,26 @@
+# prowlarr.yml
+networks:
+  arr:
+    external: true
+  arr-seerr:
+    external: true
+
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    extends:
+      file: ../base.yml
+      service: base
+    volumes:
+      - ${APPDATA_PATH}/prowlarr:/config
+    ports:
+      - 9696:9696
+    networks:
+      - arr
+    restart: unless-stopped
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Prowlarr
+      - homepage.icon=prowlarr.png
+      - homepage.href=http://192.168.2.100:9696

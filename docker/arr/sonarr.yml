@@ -1,0 +1,53 @@
+# sonarr.yml
+networks:
+  arr:
+    external: true
+  arr-seerr:
+    external: true
+
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    extends:
+      file: ../base.yml
+      service: base
+    volumes:
+      - ${APPDATA_PATH}/sonarr:/config
+      - ${SHOWS_PATH}:/shows
+      - ${SHOWS_ANIME_PATH}:/shows_anime
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - 8981:8989
+    networks:
+      - arr
+      - arr-seerr
+    restart: unless-stopped
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Sonarr
+      - homepage.icon=sonarr.png
+      - homepage.href=http://192.168.2.100:8981
+
+  # sonarr_anime:
+  #   image: lscr.io/linuxserver/sonarr:latest
+  #   container_name: sonarr_anime
+  #   extends:
+  #     file: ../base.yml
+  #     service: base
+  #   volumes:
+  #     - ${APPDATA_PATH}/sonarr_anime:/config
+  #     - ${SHOWS_ANIME_PATH}:/shows_anime
+  #     - ${DOWNLOADS_PATH}:/downloads
+  #   ports:
+  #     - 8982:8989
+  #   networks:
+  #     - arr
+  #     - arr-seerr
+  #   restart: unless-stopped
+  #   labels:
+  #     - homepage.group=Arrs
+  #     - homepage.name=Sonarr Anime
+  #     - homepage.icon=sonarr.png
+  #     - homepage.href=http://192.168.2.100:8982
+
