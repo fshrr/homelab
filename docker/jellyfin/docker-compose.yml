@@ -15,10 +15,9 @@ services:
       - JELLYFIN_PublishedServerUrl=http://192.168.0.5 #optional
     volumes:
       - /mnt/docker/jellyfin:/config
-      - /mnt/nas/media/movies:/movies:ro
-      - /mnt/nas/media/tv:/tv:ro
+      - /mnt/nas/media/:/media
     devices:
-      - /dev/dri:/dev/dri
+      - /dev/dri/renderD128:/dev/dri/renderD128
     ports:
       - 8096:8096
     networks:
@@ -37,7 +36,7 @@ services:
       - "traefik.docker.network=traefik"
 
   jellyseerr: 
-    image: ghcr.io/hotio/jellyseerr
+    image: ghcr.io/hotio/jellyseerr:latest
     container_name: jellyseerr 
     hostname: jellyseerr 
     extends:
