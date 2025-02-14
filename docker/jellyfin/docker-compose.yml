@@ -13,7 +13,6 @@ services:
       service: base
     environment:
       - JELLYFIN_PublishedServerUrl=http://192.168.0.5 #optional
-      - TZ=America/Toronto #necessary, similar to plex although I imagine some use case is international 
     volumes:
       - /mnt/docker/jellyfin:/config
       - /mnt/nas/media/:/media
@@ -21,8 +20,9 @@ services:
       - /dev/dri/renderD128:/dev/dri/renderD128
     ports:
       - 8096:8096
-      #- '7359:7359/udp' # for network discovery like smart TVs, media players, apps, LAN
-      #- '1900:1900/udo' # for TV/media devices that use DLNA, lets Jellyfin act as a DLNA server
+      #- 8920:8920 #for https
+      - '7359:7359/udp' # for network discovery like smart TVs, media players, apps, LAN
+      - '1900:1900/udp' # for TV/media devices that use DLNA, lets Jellyfin act as a DLNA server
     networks:
       - traefik
     restart: unless-stopped
