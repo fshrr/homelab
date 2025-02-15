@@ -46,7 +46,6 @@ services:
     ports: 
       - 5055:5055 
     networks:
-      - traefik
       - arr-seerr
     volumes: 
       - /mnt/docker/jellyseerr:/app/config 
