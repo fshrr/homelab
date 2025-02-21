@@ -55,7 +55,7 @@ services:
       - homepage.group=Management
       - homepage.name=Traefik
       - homepage.icon=traefik.png
-      - homepage.href=http://192.168.2.100:8080
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8080
 
   whoami:
     image: "traefik/whoami"

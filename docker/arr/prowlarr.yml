@@ -23,4 +23,4 @@ services:
       - homepage.group=Arrs
       - homepage.name=Prowlarr
       - homepage.icon=prowlarr.png
-      - homepage.href=http://192.168.2.100:9696
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:9696

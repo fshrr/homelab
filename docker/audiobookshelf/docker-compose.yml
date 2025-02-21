@@ -21,7 +21,7 @@ services:
       - homepage.group=Media
       - homepage.name=Audiobookshelf
       - homepage.icon=audiobookshelf.png
-      - homepage.href=http://192.168.2.100:13378
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:13378
       - "traefik.enable=true"
       - "traefik.http.routers.jellyfin.rule=Host(`audiobooks.fshrr.com`)"
       - "traefik.http.routers.jellyfin.entrypoints=websecure"

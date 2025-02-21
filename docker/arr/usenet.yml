@@ -23,7 +23,7 @@ services:
       - homepage.group=Download Clients
       - homepage.name=sabnzbd
       - homepage.icon=sabnzbd.png
-      - homepage.href=http://192.168.2.100:8081
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8081
 
   #nzbget:
   #  image: lscr.io/linuxserver/nzbget:latest
@@ -44,4 +44,4 @@ services:
   #    - homepage.group=Download Clients
   #    - homepage.name=nzbget
   #    - homepage.icon=nzbget.png
-  #    - homepage.href=http://192.168.2.100:6789
+  #    - homepage.href=http://bromine.fenrir-cardassian.ts.net:6789

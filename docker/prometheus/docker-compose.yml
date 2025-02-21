@@ -15,7 +15,7 @@ services:
       - homepage.group=Monitoring
       - homepage.name=Prometheus
       - homepage.icon=prometheus.png
-      - homepage.href=http://192.168.2.100:9080
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:9080
 
   grafana:
     image: grafana/grafana:latest
@@ -32,7 +32,7 @@ services:
       - homepage.group=Monitoring
       - homepage.name=Grafana
       - homepage.icon=grafana.png
-      - homepage.href=http://192.168.2.100:3080
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:3080
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest

@@ -29,7 +29,7 @@ services:
       - homepage.name=Calibre
       - homepage.icon=calibre.png
       - homepage.showStats=false
-      - homepage.href=http://192.168.2.100:8084
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8084
       # - "traefik.enable=true"
       # - "traefik.http.routers.calibre.rule=Host(`calibre.fshrr.com`)"
       # - "traefik.http.routers.calibre.entrypoints=websecure"
@@ -56,7 +56,7 @@ services:
       - homepage.name=Calibre Web
       - homepage.icon=calibre-web.png
       - homepage.showStats=false
-      - homepage.href=http://192.168.2.100:8083
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8083
 
   readarr:
     image: lscr.io/linuxserver/readarr:develop
@@ -76,5 +76,5 @@ services:
       - homepage.name=Readarr
       - homepage.icon=readarr.png
       - homepage.showStats=false
-      - homepage.href=http://192.168.2.100:8787
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8787
 
