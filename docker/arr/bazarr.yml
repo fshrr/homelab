@@ -26,4 +26,4 @@ services:
       - homepage.group=Arrs
       - homepage.name=Bazarr
       - homepage.icon=bazarr.png
-      - homepage.href=http://192.168.2.100:6767
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:6767

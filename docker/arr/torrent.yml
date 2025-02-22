@@ -47,7 +47,7 @@ services:
       - homepage.group=Download Clients
       - homepage.name=qbittorrent
       - homepage.icon=qbittorrent.png
-      - homepage.href=http://192.168.2.100:9090
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:9090
 
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
@@ -68,4 +68,4 @@ services:
       - homepage.group=Arrs
       - homepage.name=Flaresolverr
       - homepage.icon=flaresolverr.png
-      - homepage.href=http://192.168.2.100:8191
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8191

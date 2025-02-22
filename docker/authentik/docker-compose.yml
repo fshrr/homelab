@@ -80,7 +80,7 @@ services:
       - homepage.group=Management
       - homepage.name=Authentik
       - homepage.icon=authentik.png
-      - homepage.href=http://192.168.2.100:9000
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:9000
       - "traefik.enable=true"
       - "traefik.http.routers.authentik.rule=Host(`auth.fshrr.com`)"
       - "traefik.http.routers.authentik.entrypoints=websecure"

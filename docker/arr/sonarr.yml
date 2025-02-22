@@ -27,7 +27,7 @@ services:
       - homepage.group=Arrs
       - homepage.name=Sonarr
       - homepage.icon=sonarr.png
-      - homepage.href=http://192.168.2.100:8981
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8981
 
   # sonarr_anime:
   #   image: lscr.io/linuxserver/sonarr:latest
@@ -49,5 +49,5 @@ services:
   #     - homepage.group=Arrs
   #     - homepage.name=Sonarr Anime
   #     - homepage.icon=sonarr.png
-  #     - homepage.href=http://192.168.2.100:8982
+  #     - homepage.href=http://bromine.fenrir-cardassian.ts.net:8982
 

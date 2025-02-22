@@ -37,7 +37,7 @@ services:
       - homepage.name=Plex
       - homepage.icon=plex.png
       - homepage.showStats=true
-      - homepage.href=http://192.168.2.100:32400
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:32400
       - "traefik.enable=true"
       - "traefik.http.routers.plex.rule=Host(`plex.fshrr.com`)"
       - "traefik.http.routers.plex.entrypoints=websecure"
@@ -61,7 +61,7 @@ services:
       - homepage.group=Arrs
       - homepage.name=Tautulli
       - homepage.icon=tautulli.png
-      - homepage.href=http://192.168.2.100:8181
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8181
 
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
@@ -81,7 +81,7 @@ services:
       - homepage.group=Arrs
       - homepage.name=Overseerr
       - homepage.icon=overseerr.png
-      - homepage.href=http://192.168.2.100:5056
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:5056
       # - "traefik.enable=true"
       # - "traefik.http.routers.overseerr.rule=Host(`overseerr.fahimshahreer.com`)"
       # - "traefik.http.routers.overseerr.entrypoints=websecure"
