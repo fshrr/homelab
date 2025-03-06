@@ -23,7 +23,7 @@ services:
     labels:
       - homepage.group=Personal
       - homepage.name=Actual Budget
-      - homepage.icon=actual.png
+      - homepage.icon=actual-budget.png
       - homepage.href=https://budget.fshrr.com
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"

@@ -1,0 +1,27 @@
+networks:
+  traefik:
+    external: true
+
+volumes:
+  open-webui:
+
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    networks:
+      - traefik
+    ports:
+      - "8050:8080"
+    volumes:
+      - open-webui:/app/backend/data
+    labels:
+      - homepage.group=Personal
+      - homepage.name=Open WebUI
+      - homepage.icon=open-webui-light.png
+      - homepage.href=https://bromine.fenrir-cardassian.ts.net:8050
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.openwebui.rule=Host(`chat.fshrr.com`)"
+      - "traefik.http.routers.openwebui.entrypoints=websecure"
+      - "traefik.http.routers.openwebui.service=openwebui"
+      - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
