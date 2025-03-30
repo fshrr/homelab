@@ -1,0 +1,18 @@
+services:
+  omnitools:
+    image: iib0011/omni-tools:latest
+    container_name: omni-tools
+    ports:
+      - 7777:80
+    restart: unless-stopped
+    labels:
+      - homepage.group=Utility
+      - homepage.name=OmniTools
+      - homepage.icon=omnitools.png
+      - homepage.href=https://bromine.fenrir-cardassian.ts.net:7777
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.omnitools.rule=Host(`tools.fshrr.com`)"
+      - "traefik.http.routers.omnitools.entrypoints=websecure"
+      - "traefik.http.routers.omnitools.service=omnitools"
+      - "traefik.http.services.omnitools.loadbalancer.server.port=8080"
