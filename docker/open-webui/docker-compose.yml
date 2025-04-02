@@ -7,6 +7,7 @@ volumes:
 
 services:
   openwebui:
+    container_name: open-webui
     image: ghcr.io/open-webui/open-webui:main
     networks:
       - traefik
@@ -18,7 +19,7 @@ services:
       - homepage.group=Personal
       - homepage.name=Open WebUI
       - homepage.icon=open-webui-light.png
-      - homepage.href=https://bromine.fenrir-cardassian.ts.net:8050
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8050
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
       - "traefik.http.routers.openwebui.rule=Host(`chat.fshrr.com`)"
