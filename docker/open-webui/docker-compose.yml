@@ -1,6 +1,8 @@
 networks:
   traefik:
     external: true
+  open-webui:
+    driver: bridge
 
 volumes:
   open-webui:
@@ -11,6 +13,7 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     networks:
       - traefik
+      - open-webui
     ports:
       - "8050:8080"
     volumes:
@@ -26,3 +29,12 @@ services:
       - "traefik.http.routers.openwebui.entrypoints=websecure"
       - "traefik.http.routers.openwebui.service=openwebui"
       - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
+  
+  mcpo:
+    container_name: mcpo
+    image: ghcr.io/open-webui/mcpo:main
+    networks:
+      - open-webui
+    volumes:
+      - /mnt/docker/open-webui/mcpo-config.json:/app/config.json
+    command: ["mcpo", "--config", "/app/config.json"]
