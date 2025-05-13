@@ -1,0 +1,55 @@
+volumes:
+  miniflux-db:
+
+networks:
+  traefik:
+    external: true
+  miniflux:
+    driver: bridge
+
+services:
+  miniflux:
+    container_name: miniflux
+    image: miniflux/miniflux:latest
+    networks:
+      - traefik  
+      - miniflux
+    ports:
+      - "8124:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/miniflux?sslmode=disable
+      - RUN_MIGRATIONS=1
+      - CREATE_ADMIN=1
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    labels:
+      - homepage.group=Media
+      - homepage.name=miniflux
+      - homepage.icon=miniflux.png
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8124
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex.rule=Host(`rss.fshrr.com`)"
+      - "traefik.http.routers.plex.entrypoints=websecure"
+      - "traefik.http.services.plex.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik"
+
+  db:
+    container_name: miniflux-db
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=miniflux
+    volumes:
+      - miniflux-db:/var/lib/postgresql/data
+    networks:
+      - miniflux
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "miniflux"]
+      interval: 10s
+      start_period: 30s
