@@ -1,6 +1,4 @@
 networks:
-  traefik:
-    external: true
   arr-seerr:
     external: true
 
@@ -20,8 +18,9 @@ services:
       - /dev/dri/renderD128:/dev/dri/renderD128
     ports:
       - 8096:8096
-    networks:
-      - traefik
+      #- 8920:8920 #for https
+      - '7359:7359/udp' # for network discovery like smart TVs, media players, apps, LAN
+      - '1900:1900/udp' # for TV/media devices that use DLNA, lets Jellyfin act as a DLNA server
     restart: unless-stopped
     labels:
       - homepage.group=Media
@@ -47,7 +46,6 @@ services:
     ports: 
       - 5055:5055 
     networks:
-      - traefik
       - arr-seerr
     volumes: 
       - /mnt/docker/jellyseerr:/app/config 
