@@ -12,9 +12,8 @@ services:
   immich-server:
     container_name: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-    # extends:
-    #   file: hwaccel.transcoding.yml
-    #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
     volumes:
       # Do not edit the next line. If you want to change the media storage location on your system, edit the value of UPLOAD_LOCATION in the .env file
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
@@ -29,7 +28,7 @@ services:
     depends_on:
       - redis
       - database
-    restart: always
+    restart: unless-stopped
     healthcheck:
       disable: false
     labels:
@@ -37,9 +36,9 @@ services:
       - homepage.name=Immich
       - homepage.icon=immich.png
       - homepage.showStats=true
-      - homepage.href=https://immich.fshrr.com
+      - homepage.href=https://photos.fshrr.com
       - "traefik.enable=true"
-      - "traefik.http.routers.immich.rule=Host(`immich.fshrr.com`)"
+      - "traefik.http.routers.immich.rule=Host(`photos.fshrr.com`)"
       - "traefik.http.routers.immich.entrypoints=websecure"
       - "traefik.http.services.immich.loadbalancer.server.port=2283"
       - "traefik.docker.network=traefik"
@@ -59,7 +58,7 @@ services:
       - model-cache:/cache
     env_file:
       - .env
-    restart: always
+    restart: unless-stopped
     healthcheck:
       disable: false
 
@@ -70,7 +69,7 @@ services:
       - immich
     healthcheck:
       test: redis-cli ping || exit 1
-    restart: always
+    restart: unless-stopped
 
   database:
     container_name: immich_postgres
@@ -87,4 +86,4 @@ services:
       - database:/var/lib/postgresql/data
     networks:
       - immich
-    restart: always
+    restart: unless-stopped
