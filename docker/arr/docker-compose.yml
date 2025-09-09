@@ -6,3 +6,4 @@ include:
   - torrent.yml
   - usenet.yml
   - recyclarr.yml
+  - lidarr.yml

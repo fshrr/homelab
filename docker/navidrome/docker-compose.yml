@@ -1,0 +1,28 @@
+networks:
+  traefik:
+    external: true
+    
+volumes:
+  data:
+    driver: local
+
+services:
+  navidrome:
+    container_name: navidrome
+    image: deluan/navidrome:0.56.0
+    restart: unless-stopped
+    volumes:
+      - data:/data
+      - /mnt/nas/media/music:/music:ro
+    networks:
+      - traefik
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=Navidrome
+      - homepage.icon=navidrome.png
+      - homepage.href=https://music.fshrr.com
+      - "traefik.enable=true"
+      - "traefik.http.routers.navidrome.rule=Host(`music.fshrr.com`)"
+      - "traefik.http.routers.navidrome.entrypoints=websecure"
+      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
+    
