@@ -24,10 +24,10 @@ services:
       - homepage.group=Personal
       - homepage.name=Actual Budget
       - homepage.icon=actual-budget.png
-      - homepage.href=https://budget.fshrr.com
+      - homepage.href=https://budget.homelab.fahimshahreer.com
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
-      - "traefik.http.routers.actualbudget.rule=Host(`budget.fshrr.com`)"
+      - "traefik.http.routers.actualbudget.rule=Host(`budget.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.actualbudget.entrypoints=websecure"
       - "traefik.http.routers.actualbudget.service=actualbudget"
       - "traefik.http.services.actualbudget.loadbalancer.server.port=5006"

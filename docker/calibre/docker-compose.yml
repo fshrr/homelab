@@ -43,9 +43,9 @@ services:
       - homepage.name=Calibre Web
       - homepage.icon=calibre-web.png
       - homepage.showStats=false
-      - homepage.href=https://books.fshrr.com
+      - homepage.href=https://books.homelab.fahimshahreer.com
       - "traefik.enable=true"
-      - "traefik.http.routers.calibre.rule=Host(`books.fshrr.com`)"
+      - "traefik.http.routers.calibre.rule=Host(`books.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.calibre.entrypoints=websecure"
       - "traefik.http.services.calibre.loadbalancer.server.port=8083"
       - "traefik.docker.network=traefik"
