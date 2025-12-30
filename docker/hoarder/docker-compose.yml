@@ -28,7 +28,7 @@ services:
       - homepage.icon=hoarder-light.png
       - homepage.href=http://bromine.fenrir-cardassian.ts.net:3001
       - "traefik.enable=true"
-      - "traefik.http.routers.hoarder.rule=Host(`links.fshrr.com`)"
+      - "traefik.http.routers.hoarder.rule=Host(`links.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.hoarder.entrypoints=websecure"
       - "traefik.http.routers.hoarder.service=hoarder"
       - "traefik.http.services.hoarder.loadbalancer.server.port=3000"

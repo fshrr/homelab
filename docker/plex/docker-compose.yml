@@ -45,7 +45,7 @@ services:
       - homepage.showStats=true
       - homepage.href=http://bromine.fenrir-cardassian.ts.net:32400
       - "traefik.enable=true"
-      - "traefik.http.routers.plex.rule=Host(`watch.fshrr.com`)"
+      - "traefik.http.routers.plex.rule=Host(`watch.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.plex.entrypoints=websecure"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
       - "traefik.docker.network=traefik"
@@ -69,7 +69,7 @@ services:
       - homepage.icon=tautulli.png
       - homepage.href=http://bromine.fenrir-cardassian.ts.net:8181
       - "traefik.enable=true"
-      - "traefik.http.routers.tautulli.rule=Host(`watchstats.fshrr.com`)"
+      - "traefik.http.routers.tautulli.rule=Host(`watchstats.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.tautulli.entrypoints=websecure"
       - "traefik.http.services.tautulli.loadbalancer.server.port=8181"
       - "traefik.docker.network=traefik"
@@ -94,7 +94,7 @@ services:
       - homepage.icon=overseerr.png
       - homepage.href=http://bromine.fenrir-cardassian.ts.net:5056
       - "traefik.enable=true"
-      - "traefik.http.routers.overseerr.rule=Host(`request.fshrr.com`)"
+      - "traefik.http.routers.overseerr.rule=Host(`request.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.overseerr.entrypoints=websecure"
       - "traefik.http.services.overseerr.loadbalancer.server.port=5055"
       - "traefik.docker.network=traefik"

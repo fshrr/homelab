@@ -36,9 +36,9 @@ services:
       - homepage.name=Immich
       - homepage.icon=immich.png
       - homepage.showStats=true
-      - homepage.href=https://photos.fshrr.com
+      - homepage.href=https://photos.homelab.fahimshahreer.com
       - "traefik.enable=true"
-      - "traefik.http.routers.immich.rule=Host(`photos.fshrr.com`)"
+      - "traefik.http.routers.immich.rule=Host(`photos.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.immich.entrypoints=websecure"
       - "traefik.http.services.immich.loadbalancer.server.port=2283"
       - "traefik.docker.network=traefik"

@@ -45,8 +45,8 @@ services:
       - "--certificatesresolvers.cf-dns-resolver.acme.storage=/letsencrypt/acme.json"
       ## Add cf-dns-resolver as default certresolver for all services. Also enables TLS and no need to specify on individual services
       - --entrypoints.websecure.http.tls.certresolver=cf-dns-resolver
-      - --entrypoints.websecure.http.tls.domains[0].main=fshrr.com
-      - --entrypoints.websecure.http.tls.domains[0].sans=*.fshrr.com
+      - --entrypoints.websecure.http.tls.domains[0].main=homelab.fahimshahreer.com
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.homelab.fahimshahreer.com
       ## redirect all http traffic to https
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
@@ -64,6 +64,6 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`test.fshrr.com`)"
+      - "traefik.http.routers.whoami.rule=Host(`test.homelab.fahimshahreer.com`)"
       - "traefik.http.routers.whoami.entrypoints=websecure"
       
