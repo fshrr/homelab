@@ -1,0 +1,61 @@
+networks:
+  traefik:
+    external: true
+  arr:
+    external: true
+
+volumes:
+  mediamanager_postgres:
+    driver: local
+
+services:
+  mediamanager:
+    container_name: mediamanager
+    image: ghcr.io/maxdorninger/mediamanager/mediamanager:latest
+    networks:
+      - traefik
+      - arr
+    ports:
+      - "8345:8000"
+    environment:
+      - CONFIG_DIR=/app/config
+    volumes:
+      - ${IMAGES_PATH}:/images/
+      - ${MOVIES_PATH}:/movies/
+      - ${MOVIES_4k_PATH}:/movies_4k/
+      - ${MOVIES_ANIME_PATH}:/movies_anime/
+      - ${SHOWS_PATH}:/shows/
+      - ${SHOWS_ANIME_PATH}:/shows_anime/
+      - ${DOWNLOADS_PATH}:/downloads/
+      - ./config/:/app/config/
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - homepage.group=Arrs
+      - homepage.name=MediaManager
+      - homepage.icon=media-manager.png
+      - homepage.href=http://bromine.fenrir-cardassian.ts.net:8345
+      - "traefik.enable=true"
+      - "traefik.http.routers.mediamanager.rule=Host(`mediamanager.homelab.fahimshahreer.com`)"
+      - "traefik.http.routers.mediamanager.entrypoints=websecure"
+      - "traefik.http.services.mediamanager.loadbalancer.server.port=8000"
+      - "traefik.docker.network=traefik"
+
+  db:
+    container_name: mediamanager_postgres
+    image: postgres:17
+    restart: unless-stopped
+    networks:
+      - arr
+    volumes:
+      - mediamanager_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: MediaManager
+      POSTGRES_DB: MediaManager
+      POSTGRES_PASSWORD: MediaManager
