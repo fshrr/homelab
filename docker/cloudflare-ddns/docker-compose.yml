@@ -10,5 +10,5 @@ services:
       file: ../base.yml
       service: base
     volumes:
-      - /mnt/docker/cloudflare-ddns/config.json:/config.json:ro
+      - ./config/config.json:/config.json:ro
     restart: unless-stopped
