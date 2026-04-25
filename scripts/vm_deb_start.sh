@@ -115,7 +115,7 @@ chsh -s "$(which zsh)"
 
 # ------------------------------------------------------------
 echo "==> Enabling services..."
-sudo systemctl enable --now qemu-guest-agent
+sudo systemctl start qemu-guest-agent
 sudo systemctl enable fail2ban
 sudo dpkg-reconfigure --priority=low unattended-upgrades
 
