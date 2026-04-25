@@ -48,7 +48,7 @@ sudo apt install -y \
   neovim zsh tmux nfs-common fzf zoxide eza \
   iozone3 git git-delta ethtool tre-command stow \
   ffmpeg 7zip jq poppler-utils fd-find ripgrep imagemagick \
-  ufw fail2ban unattended-upgrades pipx \
+  ufw fail2ban unattended-upgrades \
   chrony lazygit cloud-init cloud-guest-utils qemu-guest-agent
 
 echo "==> Installing yazi..."
@@ -102,7 +102,7 @@ echo "==> Installing uv (Python package manager)..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 echo "==> Installing thefuck..."
-pipx install thefuck
+"$HOME/.local/bin/uv" tool install thefuck
 
 echo "==> Cloning dotfiles..."
 git clone https://github.com/fshrr/dotfiles ~/.dotfiles
