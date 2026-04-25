@@ -74,7 +74,9 @@ echo "==> Installing thefuck..."
 "$HOME/.local/bin/uv" tool install thefuck
 
 echo "==> Cloning dotfiles..."
-git clone https://github.com/fshrr/dotfiles ~/.dotfiles
+if [[ ! -d "$HOME/.dotfiles" ]]; then
+  git clone https://github.com/fshrr/dotfiles ~/.dotfiles
+fi
 cd ~/.dotfiles
 ./install.sh "$DOTFILES_PROFILE"
 cd ~
