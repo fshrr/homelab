@@ -116,6 +116,7 @@ chsh -s "$(which zsh)"
 
 # ------------------------------------------------------------
 echo "==> Enabling services..."
+# NOTE: also enable QEMU Guest Agent in Proxmox: VM > Options > QEMU Guest Agent > Enabled
 sudo systemctl start qemu-guest-agent
 sudo systemctl enable fail2ban
 sudo dpkg-reconfigure --priority=low unattended-upgrades
