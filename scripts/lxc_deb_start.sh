@@ -70,6 +70,9 @@ bash -c "$(curl --fail --show-error --silent --location https://raw.githubuserco
 echo "==> Installing uv (Python package manager)..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
+echo "==> Installing thefuck..."
+"$HOME/.local/bin/uv" tool install thefuck
+
 echo "==> Cloning dotfiles..."
 git clone https://github.com/fshrr/dotfiles ~/.dotfiles
 cd ~/.dotfiles
