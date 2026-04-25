@@ -107,6 +107,8 @@ echo "==> Installing thefuck..."
 echo "==> Cloning dotfiles..."
 if [[ ! -d "$HOME/.dotfiles" ]]; then
   git clone https://github.com/fshrr/dotfiles ~/.dotfiles
+else
+  git -C ~/.dotfiles pull
 fi
 cd ~/.dotfiles
 ./install.sh "$DOTFILES_PROFILE"
