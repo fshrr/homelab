@@ -48,14 +48,16 @@ sudo apt install -y \
   neovim zsh tmux nfs-common fzf zoxide eza \
   iozone3 git git-delta ethtool tre-command stow \
   ffmpeg 7zip jq poppler-utils fd-find ripgrep imagemagick \
-  ufw fail2ban unattended-upgrades snapd \
+  ufw fail2ban unattended-upgrades \
   chrony lazygit cloud-init cloud-guest-utils qemu-guest-agent
 
-echo "==> Installing snap core..."
-sudo snap install core
-
 echo "==> Installing yazi..."
-sudo snap install yazi --classic --edge
+YAZI_VERSION=$(curl -s https://api.github.com/repos/sxyazi/yazi/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+curl -Lo /tmp/yazi.zip "https://github.com/sxyazi/yazi/releases/download/${YAZI_VERSION}/yazi-x86_64-unknown-linux-gnu.zip"
+unzip -q /tmp/yazi.zip -d /tmp/yazi
+sudo install -m 0755 /tmp/yazi/yazi-x86_64-unknown-linux-gnu/yazi /usr/local/bin/yazi
+sudo install -m 0755 /tmp/yazi/yazi-x86_64-unknown-linux-gnu/ya /usr/local/bin/ya
+rm -rf /tmp/yazi /tmp/yazi.zip
 
 # ------------------------------------------------------------
 echo "==> Tuning VM sysctl parameters..."
