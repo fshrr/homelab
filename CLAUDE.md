@@ -6,9 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a homelab infrastructure-as-code repository managing Docker Compose services running on a host named **bromine** (Tailscale address: `bromine.fenrir-cardassian.ts.net`). Services are accessible internally via Tailscale and externally via Traefik reverse proxy at `*.homelab.fahimshahreer.com` (and some at `*.fahimshahreer.com`).
 
+The repo is being migrated to full IaC. The target stack is Ansible (system config) + OpenTofu with `bpg/proxmox` (LXC provisioning) + Infisical (secrets) + GitHub Actions (CI/CD). See `README.md` for the staged migration plan.
+
+**Do not suggest shell scripts as the long-term solution.** The `scripts/` directory is a transitional fallback; equivalent Ansible tasks are the target for new work. When helping with bootstrapping or deployment tasks, orient answers toward Ansible playbooks and roles under `infra/ansible/` even if that directory doesn't exist yet.
+
+## Known Security Issues (Not Yet Resolved)
+
+- `docker/restic/rclone.conf` — contains hardcoded Mega.nz credentials; must be removed from git tracking, credentials rotated, and replaced with an Ansible-templated file
+- `docker/arr/torrent.yml` — contains hardcoded VPN username and password; must be moved to the arr `.env` file and referenced via env vars
+
+Do not suggest committing new secrets to the repo. All secrets belong in Infisical.
+
 ## Common Operations
 
-Deploy or update a service stack:
+Deploy or update a service stack (current, manual):
 ```bash
 cd docker/<service>
 docker compose up -d
@@ -24,20 +35,20 @@ View logs:
 docker compose logs -f [service-name]
 ```
 
-Create required Docker networks (run once on a new host):
+Bootstrap a new Debian 13 LXC container (transitional — will be replaced by Ansible):
+```bash
+bash scripts/lxc_deb_start.sh
+```
+
+Create required Docker networks (transitional — will be replaced by Ansible `docker` role):
 ```bash
 bash scripts/docker_networks.sh
 ```
 
-Create an NFS-backed Docker volume:
+Create an NFS-backed Docker volume (transitional):
 ```bash
 bash scripts/create_docker_nfs_volume.sh <volume-name> <nfs-device-path>
 # NFS server is at 192.168.2.120
-```
-
-Bootstrap a new Debian 13 LXC container:
-```bash
-bash scripts/lxc_deb_start.sh
 ```
 
 ## Architecture
@@ -46,7 +57,9 @@ bash scripts/lxc_deb_start.sh
 
 - `docker/` — one subdirectory per service stack, each with its own `docker-compose.yml` (or `.yaml`) and `.env.example`
 - `docker/base.yml` — shared base service with common env vars (`PUID=1001`, `PGID=1001`, `TZ=America/Toronto`); stacks extend this via `extends:`
-- `scripts/` — utility shell scripts for host/infrastructure setup
+- `scripts/` — transitional shell scripts; being replaced by Ansible roles in `infra/ansible/`
+- `infra/tofu/` — OpenTofu config for Proxmox LXC provisioning (added as migration progresses)
+- `infra/ansible/` — Ansible roles and playbooks for system config and service deployment (added as migration progresses)
 
 ### Docker Networks
 
@@ -97,3 +110,7 @@ Homepage auto-discovers services via Docker labels through the `docker-socket-pr
 | Restic | `docker/restic/` | Backup via rclone to Mega.nz |
 | Cloudflare DDNS | `docker/cloudflare-ddns/` | Dynamic DNS updater |
 | Prometheus/Grafana | `docker/prometheus/` | Monitoring stack with node_exporter |
+
+## Documentation
+
+Project documentation lives in `docs/` — see `docs/index.md` for the full index. Before starting new feature work, scan the index for related prior spikes, decisions, and plans. After completing features or making significant decisions, use the `docs-setup` skill to distill working documents into permanent docs.
