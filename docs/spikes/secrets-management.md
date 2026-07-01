@@ -5,7 +5,7 @@
 **Author:** Claude Code
 
 ## Context
-Infisical already serves as the secrets manager for the homelab (self-hosted in dedicated LXC). With the move to Kubernetes, secrets need to flow from Infisical into K8s Secrets objects. Evaluated whether to keep Infisical or switch.
+Infisical already serves as the secrets manager for the homelab (Infisical Cloud — the managed SaaS, not self-hosted). With the move to Kubernetes, secrets need to flow from Infisical into K8s Secrets objects. Evaluated whether to keep Infisical or switch.
 
 ## Questions
 - [x] Does Infisical work with Kubernetes?
@@ -24,7 +24,7 @@ Infisical already serves as the secrets manager for the homelab (self-hosted in 
 
 ### Option A: Infisical + External Secrets Operator
 **How it works:** ESO deployed in K8s, configured with Infisical provider. `ExternalSecret` CRDs define which secrets to sync. ESO creates/updates K8s Secrets automatically.
-**Pros:** Already have Infisical running, ESO is CNCF project, no migration needed, simple to operate.
+**Pros:** Already use Infisical Cloud, ESO is CNCF project, no migration needed, simple to operate, no self-hosted secrets instance to maintain.
 **Cons:** ESO adds another component to maintain.
 
 ### Option B: HashiCorp Vault
@@ -38,7 +38,7 @@ Infisical already serves as the secrets manager for the homelab (self-hosted in 
 **Cons:** Cluster-scoped key management, no central secrets UI, doesn't replace Infisical for non-K8s secrets.
 
 ## Recommendation
-Option A: Keep Infisical, add External Secrets Operator. Already invested in Infisical, works well, ESO integration is straightforward. No reason to migrate.
+Option A: Keep Infisical, add External Secrets Operator. Already invested in Infisical Cloud (SaaS), works well, ESO integration is straightforward. No reason to migrate.
 
 `→ decisions/infisical-eso.md`
 

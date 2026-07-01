@@ -16,7 +16,7 @@ _No plans yet._
 - [Talos Linux](spikes/talos-linux.md) — K8s node OS: Talos over k3s/Debian, hybrid model with LXC for GPU
 - [GitOps — ArgoCD](spikes/gitops-argocd.md) — ArgoCD over FluxCD for learning value and UI feedback loops
 - [OpenTofu IaC](spikes/opentofu-iac.md) — OpenTofu stays, scope expands to Talos VMs + cloud providers
-- [Secrets — Infisical + ESO](spikes/secrets-management.md) — Keep Infisical, add External Secrets Operator for K8s
+- [Secrets — Infisical Cloud + ESO](spikes/secrets-management.md) — Use Infisical Cloud (SaaS), add External Secrets Operator for K8s
 - [CNI — Cilium](spikes/cilium-cni.md) — Cilium for eBPF networking, Hubble observability, Gateway API
 
 - [Monitoring](spikes/monitoring.md) — Prometheus + Grafana + Loki + Hubble for full observability

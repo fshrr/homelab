@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a homelab infrastructure-as-code repository managing Docker Compose services running on a host named **bromine** (Tailscale address: `bromine.fenrir-cardassian.ts.net`). Services are accessible internally via Tailscale and externally via Traefik reverse proxy at `*.homelab.fahimshahreer.com` (and some at `*.fahimshahreer.com`).
 
-The repo is being migrated to full IaC. The target stack is Ansible (system config) + OpenTofu with `bpg/proxmox` (LXC provisioning) + Infisical (secrets) + GitHub Actions (CI/CD). See `README.md` for the staged migration plan.
+The repo is being migrated to full IaC. The target stack is Ansible (system config) + OpenTofu with `bpg/proxmox` (LXC provisioning) + Infisical Cloud (secrets) + GitHub Actions (CI/CD). See `README.md` for the staged migration plan.
 
 **Do not suggest shell scripts as the long-term solution.** The `scripts/` directory is a transitional fallback; equivalent Ansible tasks are the target for new work. When helping with bootstrapping or deployment tasks, orient answers toward Ansible playbooks and roles under `infra/ansible/` even if that directory doesn't exist yet.
 
