@@ -6,21 +6,27 @@ Self-hosted infrastructure running on Proxmox across multiple hosts. Services ar
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
+│  Infisical Cloud (SaaS) — secrets source of truth            │
+│  External Secrets Operator syncs them into K8s Secrets       │
+└──────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
 │                      Proxmox Hosts                           │
 │                                                              │
 │  ┌───────────────────────────┐  ┌──────────────────────────┐ │
 │  │     Talos Linux VMs       │  │    LXC Containers        │ │
 │  │                           │  │    (GPU workloads)       │ │
 │  │  ┌─────────────────────┐  │  │                          │ │
-│  │  │    Kubernetes       │  │  │  Jellyfin, Plex          │ │
+│  │  │    Kubernetes       │  │  │  Jellyfin                │ │
 │  │  │                     │  │  │  /dev/dri/renderD128     │ │
 │  │  │  Cilium (CNI)       │  │  │                          │ │
 │  │  │  ArgoCD (GitOps)    │  │  └──────────────────────────┘ │
 │  │  │  Longhorn (storage) │  │                               │
-│  │  │  ESO (secrets)      │  │  ┌──────────────────────────┐ │
-│  │  └─────────────────────┘  │  │  Infisical LXC           │ │
-│  └───────────────────────────┘  │  (secrets manager)       │ │
-│                                 └──────────────────────────┘ │
+│  │  │  ESO (secrets)      │  │                               │
+│  │  └─────────────────────┘  │                               │
+│  └───────────────────────────┘                               │
+│                                                              │
 │  ┌─────────────────────────────────────────────────────────┐ │
 │  │  ZFS Pool — media storage (virtio/virtiofs to VMs)      │ │
 │  └─────────────────────────────────────────────────────────┘ │
@@ -33,7 +39,7 @@ Self-hosted infrastructure running on Proxmox across multiple hosts. Services ar
 | Provisioning | OpenTofu + `bpg/proxmox` | Talos VMs, LXC containers, future cloud nodes |
 | Networking | Cilium | eBPF CNI, replaces kube-proxy, Gateway API, Hubble observability |
 | GitOps | ArgoCD | Declarative cluster state from git, UI for resource topology |
-| Secrets | Infisical + External Secrets Operator | Infisical as source of truth, ESO syncs into K8s Secrets |
+| Secrets | Infisical Cloud + External Secrets Operator | Infisical Cloud as source of truth, ESO syncs into K8s Secrets |
 | Storage (apps) | Longhorn | Replicated PVs with snapshots and S3 backup |
 | Storage (media) | Direct ZFS mount | virtio/virtiofs from Proxmox ZFS, NFS for remote nodes |
 | Monitoring | Prometheus + Grafana + Loki + Hubble | Metrics, logs, network observability — unified in Grafana |
@@ -73,7 +79,6 @@ homelab/
 | Service | Purpose | Status |
 |---|---|---|
 | Jellyfin | Media server with hardware transcoding | Docker (LXC — GPU) |
-| Plex | Media server (secondary) | Docker (LXC — GPU) |
 | Radarr | Movie automation | Docker |
 | Sonarr | TV automation | Docker |
 | Bazarr | Subtitle automation | Docker |
@@ -93,7 +98,7 @@ homelab/
 | Prometheus + Grafana | Monitoring with node_exporter | Docker |
 | Restic | Daily backup to Mega.nz via rclone | Docker |
 | Cloudflare DDNS | Dynamic DNS updater | Docker |
-| Infisical | Self-hosted secrets manager | LXC |
+| Infisical Cloud | Secrets source of truth | SaaS (external) |
 
 ## Architecture Decisions
 
@@ -102,7 +107,7 @@ homelab/
 | Node OS | [Talos Linux](docs/spikes/talos-linux.md) | Immutable, API-managed — eliminates drift, no Ansible needed for nodes |
 | GitOps | [ArgoCD](docs/spikes/gitops-argocd.md) | UI accelerates K8s learning, resource topology and sync diffs |
 | IaC | [OpenTofu](docs/spikes/opentofu-iac.md) | Scope expands from LXC-only to Talos VMs + cloud providers |
-| Secrets | [Infisical + ESO](docs/spikes/secrets-management.md) | Keep Infisical, add External Secrets Operator for K8s |
+| Secrets | [Infisical Cloud + ESO](docs/spikes/secrets-management.md) | Use Infisical Cloud, add External Secrets Operator for K8s |
 | CNI | [Cilium](docs/spikes/cilium-cni.md) | eBPF networking, replaces kube-proxy, Hubble observability |
 | Monitoring | [Prometheus + Loki + Hubble](docs/spikes/monitoring.md) | kube-prometheus-stack + Loki + Hubble, unified in Grafana |
 | Storage | [Longhorn + direct mount](docs/spikes/storage.md) | Longhorn for app data, direct ZFS mount for media |
