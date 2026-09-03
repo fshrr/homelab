@@ -9,7 +9,7 @@ description: Use when creating or updating a Proxmox VM template from a distro c
 
 Cloud images are pre-installed disks that configure themselves on first boot via cloud-init.
 Import one into a VM, attach a cloud-init drive, set defaults, then `qm template`.
-Clones (manual `qm clone` or OpenTofu `bpg/proxmox` `clone { vm_id }`) inherit everything.
+Clones inherit everything — to provision a VM from the template, use the `provisioning-vms` skill.
 
 Run everything **on the Proxmox node** as root.
 
@@ -76,9 +76,6 @@ qm disk resize $VMID scsi0 20G
 qm template $VMID
 rm $IMG
 
-# Clone
-qm clone $VMID 113 --name my-box --full --storage $STORAGE
-qm start 113
 ```
 
 ## Volume ID naming (the gotcha)
@@ -107,10 +104,9 @@ Never guess — use the VOLID printed by `qm disk import`.
 | Changed cloud-init settings not applied | `qm cloudinit update <vmid>` then reboot; only applies on first boot unless instance-id changes |
 | Template in use by tofu | Re-creating same VMID breaks linked clones; use new VMID, bump `clone.vm_id` |
 
-## Tofu usage
+## Provisioning VMs from a template
 
-`bpg/proxmox` `proxmox_virtual_environment_vm` with `clone { vm_id = 9000 }` and an
-`initialization {}` block overriding user/keys/IP. See `infra/tofu/`.
+Use the `provisioning-vms` skill (OpenTofu `bpg/proxmox`).
 
 ## Templates on methionine
 
