@@ -1,0 +1,57 @@
+---
+- name: Install GitHub CLI
+  when: install_gh | bool
+  block:
+    - name: Add GitHub CLI apt repo
+      ansible.builtin.deb822_repository:
+        name: github-cli
+        types: deb
+        uris: https://cli.github.com/packages
+        suites: stable
+        components: main
+        architectures: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
+        signed_by: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        state: present
+      register: dev_tools_gh_repo
+
+    - name: Install gh
+      ansible.builtin.apt:
+        name: gh
+        state: present
+        update_cache: "{{ dev_tools_gh_repo.changed }}"
+
+- name: Install Claude Code
+  when: install_claude_code | bool
+  become: true
+  become_user: "{{ t3_user }}"
+  block:
+    - name: Check for existing Claude Code install
+      ansible.builtin.stat:
+        path: "/home/{{ t3_user }}/.local/bin/claude"
+      register: dev_tools_claude_bin
+
+    - name: Download Claude Code installer
+      ansible.builtin.get_url:
+        url: https://claude.ai/install.sh
+        dest: "/home/{{ t3_user }}/.claude-install.sh"
+        mode: "0755"
+      when: not dev_tools_claude_bin.stat.exists
+
+    - name: Run Claude Code native installer
+      ansible.builtin.command: "/home/{{ t3_user }}/.claude-install.sh"
+      args:
+        creates: "/home/{{ t3_user }}/.local/bin/claude"
+      when: not dev_tools_claude_bin.stat.exists
+
+    - name: Remove installer script
+      ansible.builtin.file:
+        path: "/home/{{ t3_user }}/.claude-install.sh"
+        state: absent
+
+    - name: Ensure ~/.local/bin on PATH
+      ansible.builtin.lineinfile:
+        path: "/home/{{ t3_user }}/.bashrc"
+        line: 'export PATH="$HOME/.local/bin:$PATH"'
+        regexp: '^export PATH="\$HOME/\.local/bin'
+        create: true
+        mode: "0644"

@@ -1,0 +1,56 @@
+---
+- name: Gather OS facts
+  ansible.builtin.setup:
+    gather_subset: distribution
+
+- name: Add Tailscale apt repo
+  ansible.builtin.deb822_repository:
+    name: tailscale
+    types: deb
+    uris: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}"
+    suites: "{{ ansible_distribution_release }}"
+    components: main
+    signed_by: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }}.noarmor.gpg"
+    state: present
+  register: tailscale_repo
+
+- name: Install tailscale
+  ansible.builtin.apt:
+    name: tailscale
+    state: present
+    update_cache: "{{ tailscale_repo.changed }}"
+
+- name: Ensure tailscaled is running
+  ansible.builtin.service:
+    name: tailscaled
+    state: started
+    enabled: true
+
+- name: Check tailscale login state
+  ansible.builtin.command: tailscale status --json
+  register: tailscale_status
+  changed_when: false
+  failed_when: false
+
+- name: Parse tailscale backend state
+  ansible.builtin.set_fact:
+    tailscale_backend_state: "{{ (tailscale_status.stdout | from_json).BackendState | default('NoState') }}"
+  when: tailscale_status.rc == 0
+
+- name: Fail if not logged in and no auth key provided
+  ansible.builtin.fail:
+    msg: "Node is not on the tailnet and TS_AUTHKEY is empty. Run via `infisical run --path=/tailscale -- ansible-playbook ...`."
+  when:
+    - tailscale_backend_state | default('NoState') != 'Running'
+    - tailscale_authkey | length == 0
+
+- name: Join tailnet
+  ansible.builtin.command: >
+    tailscale up --auth-key={{ tailscale_authkey | quote }} --advertise-tags={{ tailscale_tags }}
+  when: tailscale_backend_state | default('NoState') != 'Running'
+  no_log: true
+  changed_when: true
+
+- name: Set tailscale operator to {{ t3_user }}
+  ansible.builtin.command: "tailscale set --operator={{ t3_user }}"
+  changed_when: false

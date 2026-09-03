@@ -1,0 +1,23 @@
+---
+- name: Remove legacy one-line apt sources left by manual install scripts
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}.list"
+    state: absent
+  loop:
+    - tailscale
+    - nodesource
+    - docker
+    - github-cli
+
+- name: Install base packages
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - python3
+      - curl
+      - git
+      - ca-certificates
+      - gnupg
+    state: present
+    update_cache: true
+    cache_valid_time: 3600

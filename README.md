@@ -59,7 +59,7 @@ homelab/
 │
 ├── infra/
 │   ├── tofu/                      # OpenTofu — Proxmox VM/LXC provisioning
-│   └── ansible/                   # Ansible — LXC container configuration
+│   └── ansible/                   # Ansible — VM/LXC system configuration
 │
 ├── scripts/                       # Transitional shell scripts
 │

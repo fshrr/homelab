@@ -1,0 +1,89 @@
+---
+- name: Install t3 globally
+  community.general.npm:
+    name: t3
+    version: "{{ t3_version }}"
+    global: true
+    state: "{{ 'latest' if t3_version == 'latest' else 'present' }}"
+  become: true
+  become_user: "{{ t3_user }}"
+  environment:
+    # npm reads the user's ~/.npmrc (allow-scripts) but global prefix is root-owned.
+    NPM_CONFIG_PREFIX: "/home/{{ t3_user }}/.npm-global"
+
+- name: Ensure ~/.npm-global/bin on PATH
+  ansible.builtin.lineinfile:
+    path: "/home/{{ t3_user }}/.bashrc"
+    line: 'export PATH="$HOME/.npm-global/bin:$PATH"'
+    regexp: '^export PATH="\$HOME/\.npm-global/bin'
+    create: true
+    owner: "{{ t3_user }}"
+    group: "{{ t3_user }}"
+    mode: "0644"
+
+- name: Verify node-pty native module built
+  ansible.builtin.stat:
+    path: "/home/{{ t3_user }}/.npm-global/lib/node_modules/t3/node_modules/node-pty/build/Release/pty.node"
+  register: t3code_pty_node
+  failed_when: not t3code_pty_node.stat.exists
+
+- name: Enable lingering so the user service survives logout and starts at boot
+  ansible.builtin.command: "loginctl enable-linger {{ t3_user }}"
+  args:
+    creates: "/var/lib/systemd/linger/{{ t3_user }}"
+
+- name: Create user systemd directory
+  ansible.builtin.file:
+    path: "/home/{{ t3_user }}/.config/systemd/user"
+    state: directory
+    owner: "{{ t3_user }}"
+    group: "{{ t3_user }}"
+    mode: "0755"
+
+- name: Install t3code user unit
+  ansible.builtin.template:
+    src: t3code.service.j2
+    dest: "/home/{{ t3_user }}/.config/systemd/user/t3code.service"
+    owner: "{{ t3_user }}"
+    group: "{{ t3_user }}"
+    mode: "0644"
+  notify: Restart t3code
+
+- name: Enable and start t3code
+  ansible.builtin.systemd_service:
+    name: t3code
+    scope: user
+    daemon_reload: true
+    enabled: true
+    state: started
+  become: true
+  become_user: "{{ t3_user }}"
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Read tailnet DNS name
+  ansible.builtin.command: tailscale status --json
+  register: t3code_ts_status
+  changed_when: false
+
+- name: Set tailnet URL
+  ansible.builtin.set_fact:
+    t3code_url: "https://{{ (t3code_ts_status.stdout | from_json).Self.DNSName | regex_replace('\\.$', '') }}"
+
+- name: Wait for t3 over Tailscale Serve (cert provisioning can take a bit on first run)
+  ansible.builtin.uri:
+    url: "{{ t3code_url }}/.well-known/t3/environment"
+    status_code: 200
+  register: t3code_probe
+  until: t3code_probe.status == 200
+  retries: 12
+  delay: 5
+  become: false
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Show connection info
+  ansible.builtin.debug:
+    msg:
+      - "t3 is up at {{ t3code_url }}"
+      - "Pair a client: ssh {{ t3_user }}@{{ ansible_host }} 't3 pair --tailscale'"

@@ -1,0 +1,24 @@
+---
+# User that owns the t3 server, Claude Code, and the systemd --user unit.
+t3_user: fahim
+
+# Local loopback port the t3 server listens on. Tailscale Serve proxies 443 -> this.
+t3_port: 3000
+
+# Exact npm version to pin. Bump and re-run to update. "latest" works but re-installs on every run.
+t3_version: "0.0.38"
+
+# NodeSource major version.
+node_major: 24
+
+# Tailscale tags advertised on `tailscale up`. Must exist in tailnet ACL tagOwners.
+tailscale_tags: "tag:servers"
+
+# OAuth client secret (or auth key) read from the environment at runtime.
+# Inject with: infisical run --path=/tailscale -- ansible-playbook ...
+tailscale_authkey: "{{ lookup('env', 'TS_AUTHKEY') }}"
+
+# Extra tools
+install_docker: true
+install_gh: true
+install_claude_code: true

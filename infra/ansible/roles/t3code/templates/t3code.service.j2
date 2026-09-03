@@ -1,0 +1,14 @@
+# Managed by Ansible (infra/ansible/roles/t3code). Manual edits will be overwritten.
+[Unit]
+Description=T3 Code server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=%h/.npm-global/bin/t3 serve --host 127.0.0.1 --port {{ t3_port }} --no-browser --tailscale-serve
+Restart=on-failure
+RestartSec=3
+Environment=PATH=%h/.npm-global/bin:%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=default.target

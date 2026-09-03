@@ -1,0 +1,11 @@
+---
+- name: Configure T3 Code server VM
+  hosts: t3code
+  roles:
+    - base
+    - tailscale
+    - node
+    - role: docker
+      when: install_docker | bool
+    - dev_tools
+    - t3code
