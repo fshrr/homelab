@@ -4,7 +4,7 @@ Quick-reference index of all spikes, decisions, and plans. Scan this before star
 
 ## Decisions
 
-_No decisions yet._
+- [Cluster topology (v1)](decisions/cluster-topology.md) — 1 control plane (tainted) + 1 worker, local on `bromine`; HA/cloud deferred
 
 ## Plans
 

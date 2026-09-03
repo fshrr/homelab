@@ -5,32 +5,37 @@ Self-hosted infrastructure running on Proxmox across multiple hosts. Services ar
 ## Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│  Infisical Cloud (SaaS) — secrets source of truth            │
-│  External Secrets Operator syncs them into K8s Secrets       │
-└──────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-┌──────────────────────────────────────────────────────────────┐
-│                      Proxmox Hosts                           │
-│                                                              │
-│  ┌───────────────────────────┐  ┌──────────────────────────┐ │
-│  │     Talos Linux VMs       │  │    LXC Containers        │ │
-│  │                           │  │    (GPU workloads)       │ │
-│  │  ┌─────────────────────┐  │  │                          │ │
-│  │  │    Kubernetes       │  │  │  Jellyfin                │ │
-│  │  │                     │  │  │  /dev/dri/renderD128     │ │
-│  │  │  Cilium (CNI)       │  │  │                          │ │
-│  │  │  ArgoCD (GitOps)    │  │  └──────────────────────────┘ │
-│  │  │  Longhorn (storage) │  │                               │
-│  │  │  ESO (secrets)      │  │                               │
-│  │  └─────────────────────┘  │                               │
-│  └───────────────────────────┘                               │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────────┐ │
-│  │  ZFS Pool — media storage (virtio/virtiofs to VMs)      │ │
-│  └─────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│  Infisical Cloud (SaaS) — secrets source of truth              │
+│  External Secrets Operator syncs them into K8s Secrets         │
+└────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌────────────────────────────────────────────────────────────────┐
+│                     Proxmox host (bromine)                     │
+│                                                                │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ Talos Linux VMs — Kubernetes cluster                     │  │
+│  │ add-ons: Cilium · ArgoCD · Longhorn · ESO                │  │
+│  │                                                          │  │
+│  │ talos-cp-01 · control plane                              │  │
+│  │   etcd · API · scheduler — tainted, runs no app pods     │  │
+│  │                                                          │  │
+│  │ talos-wn-01 · worker                                     │  │
+│  │   runs all application workloads                         │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                                                                │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ LXC container (GPU) — outside cluster                    │  │
+│  │ Jellyfin · /dev/dri/renderD128                           │  │
+│  └──────────────────────────────────────────────────────────┘  │
+│                                                                │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │ Storage                                                  │  │
+│  │   SSD — Longhorn PVs (app data), replica=1               │  │
+│  │   ZFS — media pool (virtio/virtiofs → worker)            │  │
+│  └──────────────────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────┘
 ```
 
 | Layer | Tool | Role |
