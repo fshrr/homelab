@@ -1,0 +1,11 @@
+# Local state (contains resource data and can hold secrets)
+*.tfstate
+*.tfstate.*
+
+# Real variable files hold the API token — never commit
+*.tfvars
+!*.tfvars.example
+
+# Provider plugins / working dir
+.terraform/
+crash.log

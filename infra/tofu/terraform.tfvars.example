@@ -1,0 +1,12 @@
+# Copy to terraform.tfvars ONLY to override a default. terraform.tfvars is gitignored.
+# proxmox_api_token + proxmox_endpoint come from Infisical, injected with:
+#   infisical run --path=/proxmox -- tofu <cmd>
+#
+# Defaults already match the current infra:
+#   proxmox_node      = "methionine"
+#   proxmox_bridge    = "vmbr0"
+#   talos_datastore   = "vms1"
+#   talos_iso_file_id = "adenine:iso/metal-amd64.iso"
+#
+# The nodes themselves (control-plane 101, worker 104, sizing, planned IPs) are
+# defined directly in talos.tf.
