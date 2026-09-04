@@ -1,0 +1,41 @@
+---
+# Rules go in before the default policy so an active SSH session is never cut.
+- name: Allow everything arriving on the tailscale interface
+  community.general.ufw:
+    rule: allow
+    direction: in
+    interface: "{{ firewall_tailscale_interface }}"
+
+- name: Allow WireGuard direct connections
+  community.general.ufw:
+    rule: allow
+    port: "41641"
+    proto: udp
+
+- name: Allow SSH from the LAN
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ firewall_lan_cidr }}"
+    port: "{{ firewall_ssh_port }}"
+    proto: tcp
+
+- name: Allow extra ports
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.split('/')[0] }}"
+    proto: "{{ item.split('/')[1] }}"
+  loop: "{{ firewall_extra_ports }}"
+
+- name: Deny incoming by default
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+
+- name: Allow outgoing by default
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+
+- name: Enable ufw
+  community.general.ufw:
+    state: enabled

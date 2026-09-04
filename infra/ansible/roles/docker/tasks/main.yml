@@ -1,8 +1,4 @@
 ---
-- name: Gather OS facts
-  ansible.builtin.setup:
-    gather_subset: distribution
-
 - name: Add Docker apt repo
   ansible.builtin.deb822_repository:
     name: docker
@@ -13,7 +9,6 @@
     architectures: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
     signed_by: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
     state: present
-  register: docker_repo
 
 - name: Install Docker
   ansible.builtin.apt:
@@ -24,7 +19,8 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: present
-    update_cache: "{{ docker_repo.changed }}"
+    update_cache: true
+    cache_valid_time: 3600
 
 - name: Ensure docker is running
   ansible.builtin.service:
@@ -32,8 +28,29 @@
     state: started
     enabled: true
 
-- name: Add user to docker group {{ t3_user }}
+- name: Add users to the docker group
   ansible.builtin.user:
-    name: "{{ t3_user }}"
+    name: "{{ item }}"
     groups: docker
     append: true
+  loop: "{{ docker_users }}"
+
+- name: Download lazydocker
+  ansible.builtin.get_url:
+    url: >-
+      https://github.com/jesseduffield/lazydocker/releases/download/v{{ docker_lazydocker_version
+      }}/lazydocker_{{ docker_lazydocker_version }}_Linux_x86_64.tar.gz
+    dest: "/usr/local/src/lazydocker-{{ docker_lazydocker_version }}.tar.gz"
+    checksum: "{{ docker_lazydocker_sha256 }}"
+    mode: "0644"
+
+- name: Install lazydocker
+  ansible.builtin.unarchive:
+    src: "/usr/local/src/lazydocker-{{ docker_lazydocker_version }}.tar.gz"
+    dest: /usr/local/bin
+    remote_src: true
+    include: [lazydocker]
+    owner: root
+    group: root
+    mode: "0755"
+    creates: /usr/local/bin/lazydocker

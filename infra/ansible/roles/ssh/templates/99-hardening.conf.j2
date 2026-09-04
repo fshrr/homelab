@@ -1,0 +1,11 @@
+# Managed by Ansible (infra/ansible/roles/ssh). Sorts after cloud-init's 60-cloudimg-settings.conf.
+Port {{ ssh_port }}
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+X11Forwarding no
+MaxAuthTries 3
+LoginGraceTime 30
+ClientAliveInterval 300
+ClientAliveCountMax 2
+PermitEmptyPasswords no

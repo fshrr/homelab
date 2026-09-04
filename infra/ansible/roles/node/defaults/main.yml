@@ -1,0 +1,4 @@
+---
+node_major: 24
+# User whose ~/.npmrc allows install scripts for native modules (node-pty needs a build step).
+node_npm_user: "{{ admin_user | default(ansible_user) }}"

@@ -1,0 +1,18 @@
+---
+# Non-root user that owns dev tooling, dotfiles, and the t3 service.
+admin_user: "{{ ansible_user }}"
+
+timezone: America/Toronto
+
+# LAN allowed to reach SSH. Everything else must come over the tailnet.
+lan_cidr: 192.168.2.0/24
+ssh_port: 22
+
+# Tailscale
+tailscale_tags: "tag:servers"
+tailscale_ssh: true
+# OAuth client secret (or auth key) read from the environment at runtime.
+# Inject with: infisical run --path=/tailscale -- ansible-playbook ...
+tailscale_authkey: "{{ lookup('env', 'TS_AUTHKEY') }}"
+
+dotfiles_profile: server

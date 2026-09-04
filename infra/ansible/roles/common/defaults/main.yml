@@ -1,0 +1,69 @@
+---
+common_timezone: "{{ timezone | default('UTC') }}"
+
+# Packages the Debian golden-image script installed, minus Debian-only bits.
+# lazygit is in Ubuntu apt; yazi/lazydocker come from GitHub releases in dev_tools/docker.
+common_packages:
+  - build-essential
+  - python3
+  - curl
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - apt-transport-https
+  - git
+  - git-delta
+  - zip
+  - unzip
+  - 7zip
+  - btop
+  - ncdu
+  - net-tools
+  - ethtool
+  - apache2-utils
+  - speedtest-cli
+  - iozone3
+  - neovim
+  - zsh
+  - tmux
+  - fzf
+  - zoxide
+  - eza
+  - fd-find
+  - ripgrep
+  - jq
+  - tre-command
+  - stow
+  - nfs-common
+  - ffmpeg
+  - imagemagick
+  - poppler-utils
+  - lazygit
+  - ufw
+  - fail2ban
+  - unattended-upgrades
+  - chrony
+  - cloud-init
+  - cloud-guest-utils
+  - qemu-guest-agent
+
+# Distro docker packages that conflict with docker-ce.
+common_conflicting_packages:
+  - docker.io
+  - docker-compose
+  - docker-doc
+  - podman-docker
+  - containerd
+  - runc
+
+common_sysctl_tuning:
+  vm.swappiness: 10
+  vm.vfs_cache_pressure: 50
+  fs.inotify.max_user_watches: 262144
+
+common_sysctl_hardening:
+  net.ipv4.conf.all.accept_redirects: 0
+  net.ipv4.conf.all.send_redirects: 0
+  fs.protected_hardlinks: 1
+  fs.protected_symlinks: 1
+  fs.protected_regular: 2

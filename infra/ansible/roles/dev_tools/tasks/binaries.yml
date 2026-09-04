@@ -1,0 +1,39 @@
+---
+- name: Download yazi .deb
+  ansible.builtin.get_url:
+    url: "https://github.com/sxyazi/yazi/releases/download/v{{ dev_tools_yazi_version }}/yazi-x86_64-unknown-linux-gnu.deb"
+    dest: "/usr/local/src/yazi-{{ dev_tools_yazi_version }}.deb"
+    checksum: "{{ dev_tools_yazi_sha256 }}"
+    mode: "0644"
+
+- name: Install yazi
+  ansible.builtin.apt:
+    deb: "/usr/local/src/yazi-{{ dev_tools_yazi_version }}.deb"
+
+- name: Download oh-my-posh
+  ansible.builtin.get_url:
+    url: "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v{{ dev_tools_oh_my_posh_version }}/posh-linux-amd64"
+    dest: /usr/local/bin/oh-my-posh
+    checksum: "{{ dev_tools_oh_my_posh_sha256 }}"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download uv tarball
+  ansible.builtin.get_url:
+    url: "https://github.com/astral-sh/uv/releases/download/{{ dev_tools_uv_version }}/uv-x86_64-unknown-linux-gnu.tar.gz"
+    dest: "/usr/local/src/uv-{{ dev_tools_uv_version }}.tar.gz"
+    checksum: "{{ dev_tools_uv_sha256 }}"
+    mode: "0644"
+
+- name: Install uv and uvx
+  ansible.builtin.unarchive:
+    src: "/usr/local/src/uv-{{ dev_tools_uv_version }}.tar.gz"
+    dest: /usr/local/bin
+    remote_src: true
+    extra_opts: ["--strip-components=1"]
+    include: ["uv-x86_64-unknown-linux-gnu/uv", "uv-x86_64-unknown-linux-gnu/uvx"]
+    owner: root
+    group: root
+    mode: "0755"
+    creates: /usr/local/bin/uv

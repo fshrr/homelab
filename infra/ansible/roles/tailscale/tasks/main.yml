@@ -1,8 +1,4 @@
 ---
-- name: Gather OS facts
-  ansible.builtin.setup:
-    gather_subset: distribution
-
 - name: Add Tailscale apt repo
   ansible.builtin.deb822_repository:
     name: tailscale
@@ -12,13 +8,13 @@
     components: main
     signed_by: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }}.noarmor.gpg"
     state: present
-  register: tailscale_repo
 
 - name: Install tailscale
   ansible.builtin.apt:
     name: tailscale
     state: present
-    update_cache: "{{ tailscale_repo.changed }}"
+    update_cache: true
+    cache_valid_time: 3600
 
 - name: Ensure tailscaled is running
   ansible.builtin.service:
@@ -26,31 +22,77 @@
     state: started
     enabled: true
 
-- name: Check tailscale login state
+- name: Read tailscale status
   ansible.builtin.command: tailscale status --json
-  register: tailscale_status
+  register: tailscale_status_raw
   changed_when: false
   failed_when: false
 
-- name: Parse tailscale backend state
+- name: Parse tailscale status
   ansible.builtin.set_fact:
-    tailscale_backend_state: "{{ (tailscale_status.stdout | from_json).BackendState | default('NoState') }}"
-  when: tailscale_status.rc == 0
+    tailscale_status: "{{ tailscale_status_raw.stdout | from_json if tailscale_status_raw.rc == 0 else {} }}"
 
 - name: Fail if not logged in and no auth key provided
   ansible.builtin.fail:
     msg: "Node is not on the tailnet and TS_AUTHKEY is empty. Run via `infisical run --path=/tailscale -- ansible-playbook ...`."
   when:
-    - tailscale_backend_state | default('NoState') != 'Running'
+    - tailscale_status.BackendState | default('NoState') != 'Running'
     - tailscale_authkey | length == 0
 
 - name: Join tailnet
-  ansible.builtin.command: >
-    tailscale up --auth-key={{ tailscale_authkey | quote }} --advertise-tags={{ tailscale_tags }}
-  when: tailscale_backend_state | default('NoState') != 'Running'
-  no_log: true
+  when: tailscale_status.BackendState | default('NoState') != 'Running'
+  block:
+    - name: Write auth key to a root-only file
+      ansible.builtin.copy:
+        dest: "{{ tailscale_authkey_path }}"
+        content: "{{ tailscale_authkey }}"
+        owner: root
+        group: root
+        mode: "0600"
+      no_log: true
+
+    - name: Run tailscale up
+      ansible.builtin.command: >
+        tailscale up
+        --auth-key=file:{{ tailscale_authkey_path }}
+        --advertise-tags={{ tailscale_tags }}
+        --ssh={{ tailscale_ssh | bool | lower }}
+      changed_when: true
+
+    - name: Re-read tailscale status after join
+      ansible.builtin.command: tailscale status --json
+      register: tailscale_status_raw
+      changed_when: false
+
+    - name: Parse tailscale status after join
+      ansible.builtin.set_fact:
+        tailscale_status: "{{ tailscale_status_raw.stdout | from_json }}"
+  always:
+    - name: Remove auth key file
+      ansible.builtin.file:
+        path: "{{ tailscale_authkey_path }}"
+        state: absent
+
+- name: Fail on tag drift
+  ansible.builtin.assert:
+    that: (tailscale_status.Self.Tags | default([]) | sort) == (tailscale_tags | split(',') | map('trim') | sort)
+    fail_msg: >-
+      Node advertises {{ tailscale_status.Self.Tags | default([]) }} but tailscale_tags is {{ tailscale_tags }}.
+      Re-tag by hand with `tailscale up --advertise-tags=...` (needs a fresh auth key) or update the variable.
+
+- name: Read tailscale prefs
+  ansible.builtin.command: tailscale debug prefs
+  register: tailscale_prefs_raw
+  changed_when: false
+
+# Flipping SSH while connected over the tailnet drops that session; Ansible reconnects.
+# Run the first pass over the LAN IP if Tailscale SSH ACLs are not in place yet.
+- name: Set Tailscale SSH state
+  ansible.builtin.command: "tailscale set --ssh={{ tailscale_ssh | bool | lower }} --accept-risk=lose-ssh"
+  when: (tailscale_prefs_raw.stdout | from_json).RunSSH | default(false) != (tailscale_ssh | bool)
   changed_when: true
 
-- name: Set tailscale operator to {{ t3_user }}
-  ansible.builtin.command: "tailscale set --operator={{ t3_user }}"
+- name: Set tailscale operator
+  ansible.builtin.command: "tailscale set --operator={{ tailscale_operator }}"
   changed_when: false
+  when: tailscale_operator | length > 0

@@ -1,0 +1,6 @@
+---
+# Members of the docker group. This group is root-equivalent on the host.
+docker_users: ["{{ admin_user | default(ansible_user) }}"]
+
+docker_lazydocker_version: "0.25.2"
+docker_lazydocker_sha256: "sha256:0d9dbfc26068b218e7ed84b104748cadc6e3cf733c0afd35465306fb39b9523c"

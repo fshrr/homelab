@@ -8,20 +8,20 @@
     components: main
     signed_by: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
     state: present
-  register: node_repo
 
 - name: Install Node.js
   ansible.builtin.apt:
     name: nodejs
     state: present
-    update_cache: "{{ node_repo.changed }}"
+    update_cache: true
+    cache_valid_time: 3600
 
-- name: Allow npm install scripts for native deps (node-pty needs a build step)
+- name: Allow npm install scripts for native deps
   ansible.builtin.lineinfile:
-    path: "/home/{{ t3_user }}/.npmrc"
+    path: "/home/{{ node_npm_user }}/.npmrc"
     regexp: "^allow-scripts="
     line: "allow-scripts=msgpackr-extract,node-pty"
     create: true
-    owner: "{{ t3_user }}"
-    group: "{{ t3_user }}"
+    owner: "{{ node_npm_user }}"
+    group: "{{ node_npm_user }}"
     mode: "0644"

@@ -1,0 +1,6 @@
+---
+firewall_ssh_port: "{{ ssh_port | default(22) }}"
+firewall_lan_cidr: "{{ lan_cidr | default('192.168.0.0/16') }}"
+firewall_tailscale_interface: tailscale0
+# Extra "port/proto" entries opened to everyone, e.g. ["80/tcp", "443/tcp"] for a reverse proxy host.
+firewall_extra_ports: []

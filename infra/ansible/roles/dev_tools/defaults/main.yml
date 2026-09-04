@@ -1,0 +1,20 @@
+---
+dev_tools_user: "{{ admin_user | default(ansible_user) }}"
+dev_tools_home: "/home/{{ dev_tools_user }}"
+
+dev_tools_install_gh: true
+dev_tools_install_claude_code: true
+
+# Pinned GitHub releases. Bump version + sha256 together.
+# Hashes: yazi has no checksum asset (computed once); others from checksums.txt / .sha256.
+dev_tools_yazi_version: "26.9.1"
+dev_tools_yazi_sha256: "sha256:331d6247c0a0fd549f14cd599a928a529b8b22eded1bb1f61a518376c7621b45"
+dev_tools_oh_my_posh_version: "31.1.2"
+dev_tools_oh_my_posh_sha256: "sha256:f691e8913cf5abaf941a2f73da4e5df3ceb0d99e979451ae1734347b775d843e"
+dev_tools_uv_version: "0.12.9"
+dev_tools_uv_sha256: "sha256:ec7a99cd05e0cd7f80243f135ce1361c76835cb0ee60055d14d20eba8eba1460"
+dev_tools_zinit_version: "v3.17.0"
+
+dev_tools_dotfiles_repo: https://github.com/fshrr/dotfiles
+dev_tools_dotfiles_profile: "{{ dotfiles_profile | default('server') }}"   # server | minimal | skip
+dev_tools_shell: /usr/bin/zsh
