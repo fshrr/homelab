@@ -2,7 +2,8 @@
 - name: Configure T3 Code server VM
   hosts: t3code
   roles:
-    - common
+    - base
+    - hardening
     - ssh
     - firewall
     - tailscale

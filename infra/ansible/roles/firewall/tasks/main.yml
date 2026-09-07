@@ -1,4 +1,11 @@
 ---
+- name: Install ufw
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
 # Rules go in before the default policy so an active SSH session is never cut.
 - name: Allow everything arriving on the tailscale interface
   community.general.ufw:

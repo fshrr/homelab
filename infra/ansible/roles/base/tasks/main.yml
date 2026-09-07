@@ -2,7 +2,7 @@
 - name: Refuse non-Debian-family hosts
   ansible.builtin.assert:
     that: ansible_os_family == "Debian"
-    fail_msg: "common role only supports Debian-family hosts (got {{ ansible_os_family }})"
+    fail_msg: "base role only supports Debian-family hosts (got {{ ansible_os_family }})"
 
 # Transitional: hosts first set up by the shell scripts have one-line .list sources
 # that conflict with the deb822 sources the roles below write. Remove once every host
@@ -19,13 +19,13 @@
 
 - name: Remove distro docker packages that conflict with docker-ce
   ansible.builtin.apt:
-    name: "{{ common_conflicting_packages }}"
+    name: "{{ base_conflicting_packages }}"
     state: absent
     purge: true
 
 - name: Install base packages
   ansible.builtin.apt:
-    name: "{{ common_packages }}"
+    name: "{{ base_packages }}"
     state: present
     update_cache: true
     cache_valid_time: 3600
@@ -36,36 +36,17 @@
     value: "{{ item.value }}"
     sysctl_file: /etc/sysctl.d/60-tuning.conf
     reload: true
-  loop: "{{ common_sysctl_tuning | dict2items }}"
-
-- name: Apply kernel hardening sysctls
-  ansible.posix.sysctl:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
-    sysctl_file: /etc/sysctl.d/99-hardening.conf
-    reload: true
-  loop: "{{ common_sysctl_hardening | dict2items }}"
+  loop: "{{ base_sysctl_tuning | dict2items }}"
 
 - name: Set timezone
   community.general.timezone:
-    name: "{{ common_timezone }}"
+    name: "{{ base_timezone }}"
 
-- name: Enable unattended security upgrades
-  ansible.builtin.copy:
-    src: 20auto-upgrades
-    dest: /etc/apt/apt.conf.d/20auto-upgrades
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Enable and start baseline services
+- name: Enable and start chrony
   ansible.builtin.service:
-    name: "{{ item }}"
+    name: chrony
     state: started
     enabled: true
-  loop:
-    - chrony
-    - fail2ban
 
 # Starts on its own once the VM exposes the virtio serial device (Proxmox: `qm set <id> --agent 1`).
 # Only enabled here so a template without the device does not fail the run.

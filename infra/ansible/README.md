@@ -14,7 +14,8 @@ ansible-galaxy collection install -r requirements.yml
 
 | Role | What it does |
 |---|---|
-| `common` | Baseline packages (the golden-image list), purge distro docker, sysctl tuning + hardening, timezone, chrony, unattended-upgrades, qemu-guest-agent, fail2ban |
+| `base` | Baseline packages (the golden-image list), purge distro docker, sysctl tuning, timezone, chrony, qemu-guest-agent. Reusable for hosts that skip hardening |
+| `hardening` | Kernel hardening sysctls (`99-hardening.conf`), fail2ban, unattended-upgrades |
 | `ssh` | `sshd_config.d/99-hardening.conf`, validated before restart; `ssh.socket` override and fail2ban port pin when `ssh_port` is not 22 |
 | `firewall` | UFW: allow in on `tailscale0`, 41641/udp, SSH from `lan_cidr`; deny everything else inbound |
 | `tailscale` | deb822 repo, unattended join with an auth key passed via `file:`, `--ssh`, operator, fails on tag drift |
