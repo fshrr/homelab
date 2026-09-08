@@ -1,0 +1,13 @@
+---
+terminal_user: "{{ admin_user | default(ansible_user) }}"
+terminal_home: "/home/{{ terminal_user }}"
+terminal_shell: /usr/bin/zsh
+
+terminal_packages:
+  - zsh
+  - tmux
+
+# Pinned. Bump version + sha256 together; hash from the release's checksums.txt.
+terminal_oh_my_posh_version: "31.1.2"
+terminal_oh_my_posh_sha256: "sha256:f691e8913cf5abaf941a2f73da4e5df3ceb0d99e979451ae1734347b775d843e"
+terminal_zinit_version: "v3.17.0"

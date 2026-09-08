@@ -1,24 +1,4 @@
 ---
-- name: Download yazi .deb
-  ansible.builtin.get_url:
-    url: "https://github.com/sxyazi/yazi/releases/download/v{{ dev_tools_yazi_version }}/yazi-x86_64-unknown-linux-gnu.deb"
-    dest: "/usr/local/src/yazi-{{ dev_tools_yazi_version }}.deb"
-    checksum: "{{ dev_tools_yazi_sha256 }}"
-    mode: "0644"
-
-- name: Install yazi
-  ansible.builtin.apt:
-    deb: "/usr/local/src/yazi-{{ dev_tools_yazi_version }}.deb"
-
-- name: Download oh-my-posh
-  ansible.builtin.get_url:
-    url: "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v{{ dev_tools_oh_my_posh_version }}/posh-linux-amd64"
-    dest: /usr/local/bin/oh-my-posh
-    checksum: "{{ dev_tools_oh_my_posh_sha256 }}"
-    owner: root
-    group: root
-    mode: "0755"
-
 - name: Download uv tarball
   ansible.builtin.get_url:
     url: "https://github.com/astral-sh/uv/releases/download/{{ dev_tools_uv_version }}/uv-x86_64-unknown-linux-gnu.tar.gz"
@@ -37,3 +17,23 @@
     group: root
     mode: "0755"
     creates: /usr/local/bin/uv
+
+- name: Download ast-grep zip
+  ansible.builtin.get_url:
+    url: "https://github.com/ast-grep/ast-grep/releases/download/{{ dev_tools_ast_grep_version }}/app-x86_64-unknown-linux-gnu.zip"
+    dest: "/usr/local/src/ast-grep-{{ dev_tools_ast_grep_version }}.zip"
+    checksum: "{{ dev_tools_ast_grep_sha256 }}"
+    mode: "0644"
+
+# The zip also ships an `sg` alias, deliberately skipped: /usr/local/bin/sg would
+# shadow the setgid `sg` from shadow-utils.
+- name: Install ast-grep
+  ansible.builtin.unarchive:
+    src: "/usr/local/src/ast-grep-{{ dev_tools_ast_grep_version }}.zip"
+    dest: /usr/local/bin
+    remote_src: true
+    include: ["ast-grep"]
+    owner: root
+    group: root
+    mode: "0755"
+    creates: /usr/local/bin/ast-grep

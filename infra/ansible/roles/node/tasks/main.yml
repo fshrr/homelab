@@ -25,3 +25,9 @@
     owner: "{{ node_npm_user }}"
     group: "{{ node_npm_user }}"
     mode: "0644"
+
+- name: Install pnpm
+  community.general.npm:
+    name: pnpm
+    version: "{{ node_pnpm_version }}"
+    global: true

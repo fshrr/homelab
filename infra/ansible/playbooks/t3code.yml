@@ -9,5 +9,8 @@
     - tailscale
     - docker
     - node
+    - terminal
+    - cli
+    - dotfiles
     - dev_tools
     - t3code

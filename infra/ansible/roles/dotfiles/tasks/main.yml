@@ -1,0 +1,35 @@
+---
+- name: Install stow
+  ansible.builtin.apt:
+    name: stow
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Dotfiles
+  when: dotfiles_profile_name != 'skip'
+  become: true
+  become_user: "{{ dotfiles_user }}"
+  block:
+    - name: Clone or update dotfiles
+      ansible.builtin.git:
+        repo: "{{ dotfiles_repo }}"
+        dest: "{{ dotfiles_home }}/.dotfiles"
+        version: "{{ dotfiles_version }}"
+        # .gitmodules lists tmux/omt but the repo has no gitlink for it; recursive
+        # update would report changed on every run.
+        recursive: false
+      register: dotfiles_checkout
+
+    - name: Check whether dotfiles are stowed
+      ansible.builtin.stat:
+        path: "{{ dotfiles_home }}/.zshenv"
+      register: dotfiles_zshenv
+
+    - name: Stow dotfiles profile
+      ansible.builtin.command: "./install.sh {{ dotfiles_profile_name }}"
+      args:
+        chdir: "{{ dotfiles_home }}/.dotfiles"
+      register: dotfiles_stow
+      changed_when: "'Stowing' in dotfiles_stow.stdout"
+      when: dotfiles_checkout.changed or not dotfiles_zshenv.stat.exists

@@ -1,0 +1,20 @@
+---
+cli_packages:
+  - neovim
+  - fzf
+  - zoxide
+  - eza
+  - fd-find
+  - ripgrep
+  - lazygit
+
+# yazi previewers (video thumbnails, images, PDFs). yazi runs without them.
+cli_yazi_previews: true
+cli_yazi_preview_packages:
+  - ffmpeg
+  - imagemagick
+  - poppler-utils
+
+# Pinned. yazi publishes no checksum asset; hash computed once from the .deb.
+cli_yazi_version: "26.9.1"
+cli_yazi_sha256: "sha256:331d6247c0a0fd549f14cd599a928a529b8b22eded1bb1f61a518376c7621b45"

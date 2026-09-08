@@ -17,6 +17,7 @@ base_packages:
   - 7zip
   - jq
   - ncdu
+  - btop
   - ethtool
   - speedtest-cli
   - iozone3

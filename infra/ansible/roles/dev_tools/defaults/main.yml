@@ -2,37 +2,12 @@
 dev_tools_user: "{{ admin_user | default(ansible_user) }}"
 dev_tools_home: "/home/{{ dev_tools_user }}"
 
-# Interactive tooling from apt. The dotfiles server profile expects neovim, tmux, eza, fzf, zoxide, fd.
-# ffmpeg/imagemagick/poppler-utils are yazi previewers
-dev_tools_apt_packages:
-  - zsh
-  - stow
-  - neovim
-  - tmux
-  - fzf
-  - zoxide
-  - eza
-  - fd-find
-  - ripgrep
-  - btop
-  - lazygit
-  - ffmpeg
-  - imagemagick
-  - poppler-utils
-
 dev_tools_install_gh: true
 dev_tools_install_claude_code: true
 
 # Pinned GitHub releases. Bump version + sha256 together.
-# Hashes: yazi has no checksum asset (computed once); others from checksums.txt / .sha256.
-dev_tools_yazi_version: "26.9.1"
-dev_tools_yazi_sha256: "sha256:331d6247c0a0fd549f14cd599a928a529b8b22eded1bb1f61a518376c7621b45"
-dev_tools_oh_my_posh_version: "31.1.2"
-dev_tools_oh_my_posh_sha256: "sha256:f691e8913cf5abaf941a2f73da4e5df3ceb0d99e979451ae1734347b775d843e"
+# uv: hash from the release's .sha256 asset. ast-grep: no checksum asset; computed once from the zip.
 dev_tools_uv_version: "0.12.9"
 dev_tools_uv_sha256: "sha256:ec7a99cd05e0cd7f80243f135ce1361c76835cb0ee60055d14d20eba8eba1460"
-dev_tools_zinit_version: "v3.17.0"
-
-dev_tools_dotfiles_repo: https://github.com/fshrr/dotfiles
-dev_tools_dotfiles_profile: "{{ dotfiles_profile | default('server') }}"   # server | minimal | skip
-dev_tools_shell: /usr/bin/zsh
+dev_tools_ast_grep_version: "0.45.3"
+dev_tools_ast_grep_sha256: "sha256:f8ac830881339d1edee6b2652f54798c0f4da5a827f2db38a08ee31117783ce8"

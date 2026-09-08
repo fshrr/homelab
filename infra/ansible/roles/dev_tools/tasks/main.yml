@@ -1,21 +1,11 @@
 ---
-- name: Install dev tooling from apt
-  ansible.builtin.apt:
-    name: "{{ dev_tools_apt_packages }}"
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-
 - name: GitHub CLI
   ansible.builtin.include_tasks: gh.yml
   when: dev_tools_install_gh | bool
 
-- name: Pinned binaries (yazi, oh-my-posh, uv)
+- name: Pinned binaries (uv, ast-grep)
   ansible.builtin.include_tasks: binaries.yml
 
 - name: Claude Code
   ansible.builtin.include_tasks: claude.yml
   when: dev_tools_install_claude_code | bool
-
-- name: Shell, zinit, dotfiles
-  ansible.builtin.include_tasks: shell.yml

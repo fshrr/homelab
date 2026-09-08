@@ -20,8 +20,11 @@ ansible-galaxy collection install -r requirements.yml
 | `firewall` | UFW: allow in on `tailscale0`, 41641/udp, SSH from `lan_cidr`; deny everything else inbound |
 | `tailscale` | deb822 repo, unattended join with an auth key passed via `file:`, `--ssh`, operator, fails on tag drift |
 | `docker` | docker-ce + compose plugin, docker group, pinned lazydocker |
-| `node` | NodeSource, `.npmrc` allow-scripts so node-pty builds under npm 11 |
-| `dev_tools` | Interactive tooling from apt (neovim, tmux, fzf, eza, lazygit, yazi previewers), gh, Claude Code, pinned yazi / oh-my-posh / uv, zinit, dotfiles, zsh as login shell |
+| `node` | NodeSource Node 24 + npm, pinned pnpm, `.npmrc` allow-scripts so node-pty builds under npm 11 |
+| `terminal` | zsh, tmux, pinned oh-my-posh and zinit, zsh as login shell |
+| `cli` | neovim, fzf, zoxide, eza, fd, ripgrep, lazygit, pinned yazi; previewers behind `cli_yazi_previews` |
+| `dotfiles` | stow + clone `fshrr/dotfiles`, `install.sh <profile>`; `dotfiles_profile: skip` to disable |
+| `dev_tools` | gh, Claude Code, pinned uv and ast-grep |
 | `t3code` | pinned `npm -g t3`, system unit with `User=` ordered after tailscaled, `--tailscale-serve`, HTTPS probe |
 
 Every role has `defaults/main.yml` with role-prefixed vars. Group vars in `inventory/group_vars/all.yml` feed them via `admin_user`, `timezone`, `lan_cidr`, `ssh_port`, `tailscale_*`, `dotfiles_profile`.
@@ -48,14 +51,17 @@ Idempotent; second run reports `changed=0`.
 
 ## Updating pinned tools
 
-Versions and sha256 live in each role's `defaults/main.yml` (`dev_tools_*_version`, `docker_lazydocker_*`, `t3code_version`). Bump both lines, commit, re-run. Hashes come from each project's release checksum asset:
+Versions and sha256 live in each role's `defaults/main.yml` (`terminal_*`, `cli_yazi_*`, `dev_tools_*`, `docker_lazydocker_*`, `node_pnpm_version`, `t3code_version`). Bump both lines, commit, re-run. Hashes come from each project's release checksum asset:
 
 ```bash
 curl -sL https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v<ver>/checksums.txt | grep posh-linux-amd64
 curl -sL https://github.com/astral-sh/uv/releases/download/<ver>/uv-x86_64-unknown-linux-gnu.tar.gz.sha256
 curl -sL https://github.com/jesseduffield/lazydocker/releases/download/v<ver>/checksums.txt | grep Linux_x86_64
 curl -sLo yazi.deb https://github.com/sxyazi/yazi/releases/download/v<ver>/yazi-x86_64-unknown-linux-gnu.deb && shasum -a 256 yazi.deb
+curl -sLo ag.zip https://github.com/ast-grep/ast-grep/releases/download/<ver>/app-x86_64-unknown-linux-gnu.zip && shasum -a 256 ag.zip
 ```
+
+pnpm is pinned by npm version only; the registry checks package integrity.
 
 Claude Code is unpinned on purpose (self-updating).
 
