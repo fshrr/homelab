@@ -30,6 +30,12 @@
     update_cache: true
     cache_valid_time: 3600
 
+- name: Install VM guest packages
+  ansible.builtin.apt:
+    name: "{{ base_vm_packages }}"
+    state: present
+  when: ansible_virtualization_type == "kvm" and ansible_virtualization_role == "guest"
+
 - name: Apply VM tuning sysctls
   ansible.posix.sysctl:
     name: "{{ item.key }}"
@@ -54,3 +60,4 @@
   ansible.builtin.service:
     name: qemu-guest-agent
     enabled: true
+  when: ansible_virtualization_type == "kvm" and ansible_virtualization_role == "guest"

@@ -14,14 +14,14 @@ ansible-galaxy collection install -r requirements.yml
 
 | Role | What it does |
 |---|---|
-| `base` | Baseline packages (the golden-image list), purge distro docker, sysctl tuning, timezone, chrony, qemu-guest-agent. Reusable for hosts that skip hardening |
+| `base` | System essentials (build tools, curl, git, nfs-common, chrony, cloud-init), purge distro docker, sysctl tuning, timezone; qemu-guest-agent on KVM guests only. Safe for LXC and headless hosts |
 | `hardening` | Kernel hardening sysctls (`99-hardening.conf`), fail2ban, unattended-upgrades |
 | `ssh` | `sshd_config.d/99-hardening.conf`, validated before restart; `ssh.socket` override and fail2ban port pin when `ssh_port` is not 22 |
 | `firewall` | UFW: allow in on `tailscale0`, 41641/udp, SSH from `lan_cidr`; deny everything else inbound |
 | `tailscale` | deb822 repo, unattended join with an auth key passed via `file:`, `--ssh`, operator, fails on tag drift |
 | `docker` | docker-ce + compose plugin, docker group, pinned lazydocker |
 | `node` | NodeSource, `.npmrc` allow-scripts so node-pty builds under npm 11 |
-| `dev_tools` | gh, Claude Code, pinned yazi / oh-my-posh / uv, zinit, dotfiles, zsh as login shell |
+| `dev_tools` | Interactive tooling from apt (neovim, tmux, fzf, eza, lazygit, yazi previewers), gh, Claude Code, pinned yazi / oh-my-posh / uv, zinit, dotfiles, zsh as login shell |
 | `t3code` | pinned `npm -g t3`, system unit with `User=` ordered after tailscaled, `--tailscale-serve`, HTTPS probe |
 
 Every role has `defaults/main.yml` with role-prefixed vars. Group vars in `inventory/group_vars/all.yml` feed them via `admin_user`, `timezone`, `lan_cidr`, `ssh_port`, `tailscale_*`, `dotfiles_profile`.

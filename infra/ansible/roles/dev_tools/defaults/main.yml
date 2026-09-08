@@ -2,6 +2,25 @@
 dev_tools_user: "{{ admin_user | default(ansible_user) }}"
 dev_tools_home: "/home/{{ dev_tools_user }}"
 
+# Interactive tooling from apt. The dotfiles server profile expects neovim, tmux, eza, fzf, zoxide, fd.
+# ffmpeg/imagemagick/poppler-utils are yazi previewers; apache2-utils is htpasswd for Traefik basic auth.
+dev_tools_apt_packages:
+  - zsh
+  - stow
+  - neovim
+  - tmux
+  - fzf
+  - zoxide
+  - eza
+  - fd-find
+  - ripgrep
+  - btop
+  - lazygit
+  - ffmpeg
+  - imagemagick
+  - poppler-utils
+  - apache2-utils
+
 dev_tools_install_gh: true
 dev_tools_install_claude_code: true
 

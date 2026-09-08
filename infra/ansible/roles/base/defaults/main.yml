@@ -1,9 +1,9 @@
 ---
 base_timezone: "{{ timezone | default('UTC') }}"
 
-# Packages the Debian golden-image script installed, minus Debian-only bits.
-# lazygit is in Ubuntu apt; yazi/lazydocker come from GitHub releases in dev_tools/docker.
-# Security packages (ufw, fail2ban, unattended-upgrades) live in the firewall/hardening roles.
+# System essentials only: kept as the union of what Ubuntu cloud images and Debian LXC
+# templates ship, since `state: present` on an installed package is free.
+# Interactive/dev tooling lives in dev_tools; ufw in firewall; fail2ban/unattended-upgrades in hardening.
 base_packages:
   - build-essential
   - python3
@@ -11,38 +11,22 @@ base_packages:
   - ca-certificates
   - gnupg
   - lsb-release
-  - apt-transport-https
   - git
-  - git-delta
   - zip
   - unzip
   - 7zip
-  - btop
+  - jq
   - ncdu
-  - net-tools
   - ethtool
-  - apache2-utils
   - speedtest-cli
   - iozone3
-  - neovim
-  - zsh
-  - tmux
-  - fzf
-  - zoxide
-  - eza
-  - fd-find
-  - ripgrep
-  - jq
-  - tre-command
-  - stow
   - nfs-common
-  - ffmpeg
-  - imagemagick
-  - poppler-utils
-  - lazygit
   - chrony
   - cloud-init
   - cloud-guest-utils
+
+# VM-only packages; skipped on LXC where there is no virtio device.
+base_vm_packages:
   - qemu-guest-agent
 
 # Distro docker packages that conflict with docker-ce.
