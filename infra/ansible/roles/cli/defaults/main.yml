@@ -7,6 +7,7 @@ cli_packages:
   - fd-find
   - ripgrep
   - lazygit
+  - git-delta
 
 # yazi previewers (video thumbnails, images, PDFs). yazi runs without them.
 cli_yazi_previews: true

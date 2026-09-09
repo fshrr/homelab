@@ -22,7 +22,7 @@ ansible-galaxy collection install -r requirements.yml
 | `docker` | docker-ce + compose plugin, docker group, pinned lazydocker |
 | `node` | NodeSource Node 24 + npm, pinned pnpm, `.npmrc` allow-scripts so node-pty builds under npm 11 |
 | `terminal` | zsh, tmux, pinned oh-my-posh and zinit, zsh as login shell |
-| `cli` | neovim, fzf, zoxide, eza, fd, ripgrep, lazygit, pinned yazi; previewers behind `cli_yazi_previews` |
+| `cli` | neovim, fzf, zoxide, eza, fd, ripgrep, lazygit, git-delta, pinned yazi; previewers behind `cli_yazi_previews` |
 | `dotfiles` | stow + clone `fshrr/dotfiles`, `install.sh <profile>`; `dotfiles_profile: skip` to disable |
 | `dev_tools` | gh, Claude Code, pinned uv and ast-grep |
 | `t3code` | pinned `npm -g t3`, system unit with `User=` ordered after tailscaled, `--tailscale-serve`, HTTPS probe |
