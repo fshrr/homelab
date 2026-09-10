@@ -1,0 +1,11 @@
+---
+hardening_packages:
+  - fail2ban
+  - unattended-upgrades
+
+hardening_sysctl:
+  net.ipv4.conf.all.accept_redirects: 0
+  net.ipv4.conf.all.send_redirects: 0
+  fs.protected_hardlinks: 1
+  fs.protected_symlinks: 1
+  fs.protected_regular: 2

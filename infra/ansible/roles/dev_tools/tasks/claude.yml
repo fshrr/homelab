@@ -1,0 +1,34 @@
+---
+- name: Check for existing Claude Code install
+  ansible.builtin.stat:
+    path: "{{ dev_tools_home }}/.local/bin/claude"
+  register: dev_tools_claude_bin
+
+# Claude Code self-updates, so this stays unpinned by design.
+- name: Install Claude Code
+  when: not dev_tools_claude_bin.stat.exists
+  become: true
+  become_user: "{{ dev_tools_user }}"
+  block:
+    - name: Download Claude Code installer
+      ansible.builtin.get_url:
+        url: https://claude.ai/install.sh
+        dest: "{{ dev_tools_home }}/.claude-install.sh"
+        mode: "0755"
+
+    - name: Run Claude Code native installer
+      ansible.builtin.command: "{{ dev_tools_home }}/.claude-install.sh"
+      args:
+        creates: "{{ dev_tools_home }}/.local/bin/claude"
+  always:
+    - name: Remove installer script
+      ansible.builtin.file:
+        path: "{{ dev_tools_home }}/.claude-install.sh"
+        state: absent
+
+- name: Expose claude on the system PATH
+  ansible.builtin.file:
+    src: "{{ dev_tools_home }}/.local/bin/claude"
+    dest: /usr/local/bin/claude
+    state: link
+    force: true

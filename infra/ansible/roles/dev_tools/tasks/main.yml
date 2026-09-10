@@ -1,0 +1,11 @@
+---
+- name: GitHub CLI
+  ansible.builtin.include_tasks: gh.yml
+  when: dev_tools_install_gh | bool
+
+- name: Pinned binaries (uv, ast-grep)
+  ansible.builtin.include_tasks: binaries.yml
+
+- name: Claude Code
+  ansible.builtin.include_tasks: claude.yml
+  when: dev_tools_install_claude_code | bool

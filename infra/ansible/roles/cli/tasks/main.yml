@@ -1,0 +1,18 @@
+---
+- name: Install CLI tools
+  ansible.builtin.apt:
+    name: "{{ cli_packages + (cli_yazi_preview_packages if cli_yazi_previews else []) }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Download yazi .deb
+  ansible.builtin.get_url:
+    url: "https://github.com/sxyazi/yazi/releases/download/v{{ cli_yazi_version }}/yazi-x86_64-unknown-linux-gnu.deb"
+    dest: "/usr/local/src/yazi-{{ cli_yazi_version }}.deb"
+    checksum: "{{ cli_yazi_sha256 }}"
+    mode: "0644"
+
+- name: Install yazi
+  ansible.builtin.apt:
+    deb: "/usr/local/src/yazi-{{ cli_yazi_version }}.deb"

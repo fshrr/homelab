@@ -1,0 +1,6 @@
+---
+node_major: 24
+# User whose ~/.npmrc allows install scripts for native modules (node-pty needs a build step).
+node_npm_user: "{{ admin_user | default(ansible_user) }}"
+# Pinned via npm; the registry verifies package integrity so no sha256 here.
+node_pnpm_version: "12.3.4"

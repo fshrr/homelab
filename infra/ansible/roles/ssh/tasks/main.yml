@@ -1,0 +1,60 @@
+---
+- name: Install sshd hardening drop-in
+  ansible.builtin.template:
+    src: 99-hardening.conf.j2
+    dest: /etc/ssh/sshd_config.d/99-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: Restart ssh
+
+# Ubuntu uses socket activation for sshd; the Port directive alone is ignored there.
+- name: Check whether ssh.socket is in use
+  ansible.builtin.stat:
+    path: /etc/systemd/system/sockets.target.wants/ssh.socket
+  register: ssh_socket_enabled
+
+- name: Point ssh.socket at the configured port
+  when:
+    - ssh_socket_enabled.stat.exists
+    - ssh_port | int != 22
+  block:
+    - name: Create ssh.socket drop-in directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/ssh.socket.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Write ssh.socket listen override
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/ssh.socket.d/listen.conf
+        content: |
+          [Socket]
+          ListenStream=
+          ListenStream={{ ssh_port }}
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart ssh socket
+
+- name: Remove ssh.socket override when using the default port
+  ansible.builtin.file:
+    path: /etc/systemd/system/ssh.socket.d/listen.conf
+    state: absent
+  when: ssh_port | int == 22
+  notify: Restart ssh socket
+
+- name: Pin fail2ban sshd jail to the configured port
+  ansible.builtin.copy:
+    dest: /etc/fail2ban/jail.d/sshd.local
+    content: |
+      [sshd]
+      enabled = true
+      port = {{ ssh_port }}
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart fail2ban

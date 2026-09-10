@@ -1,0 +1,45 @@
+---
+base_timezone: "{{ timezone | default('UTC') }}"
+
+# System essentials only: kept as the union of what Ubuntu cloud images and Debian LXC
+# templates ship, since `state: present` on an installed package is free.
+# Interactive/dev tooling lives in dev_tools; ufw in firewall; fail2ban/unattended-upgrades in hardening.
+base_packages:
+  - build-essential
+  - python3
+  - curl
+  - ca-certificates
+  - gnupg
+  - lsb-release
+  - git
+  - zip
+  - unzip
+  - 7zip
+  - jq
+  - ncdu
+  - btop
+  - ethtool
+  - speedtest-cli
+  - iozone3
+  - nfs-common
+  - chrony
+  - cloud-init
+  - cloud-guest-utils
+
+# VM-only packages; skipped on LXC where there is no virtio device.
+base_vm_packages:
+  - qemu-guest-agent
+
+# Distro docker packages that conflict with docker-ce.
+base_conflicting_packages:
+  - docker.io
+  - docker-compose
+  - docker-doc
+  - podman-docker
+  - containerd
+  - runc
+
+base_sysctl_tuning:
+  vm.swappiness: 10
+  vm.vfs_cache_pressure: 50
+  fs.inotify.max_user_watches: 262144

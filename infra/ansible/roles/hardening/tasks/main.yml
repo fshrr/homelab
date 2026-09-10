@@ -1,0 +1,31 @@
+---
+- name: Install hardening packages
+  ansible.builtin.apt:
+    name: "{{ hardening_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Apply kernel hardening sysctls
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/99-hardening.conf
+    reload: true
+  loop: "{{ hardening_sysctl | dict2items }}"
+
+- name: Enable unattended security upgrades
+  ansible.builtin.copy:
+    src: 20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+
+# Ubuntu 26.04 fail2ban (1.1.0+) ships with backend = systemd, so no jail.local needed here.
+# The ssh role pins the sshd jail port when ssh_port is not 22.
+- name: Enable and start fail2ban
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true

@@ -1,0 +1,6 @@
+---
+# Local loopback port the t3 server listens on. Tailscale Serve proxies 443 -> this.
+t3code_port: 3000
+
+# Exact npm version to pin. Bump and re-run to update.
+t3code_version: "0.0.38"

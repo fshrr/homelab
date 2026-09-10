@@ -1,0 +1,30 @@
+---
+- name: Install shell packages
+  ansible.builtin.apt:
+    name: "{{ terminal_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Download oh-my-posh
+  ansible.builtin.get_url:
+    url: "https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/v{{ terminal_oh_my_posh_version }}/posh-linux-amd64"
+    dest: /usr/local/bin/oh-my-posh
+    checksum: "{{ terminal_oh_my_posh_sha256 }}"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Clone zinit
+  ansible.builtin.git:
+    repo: https://github.com/zdharma-continuum/zinit.git
+    dest: "{{ terminal_home }}/.local/share/zinit/zinit.git"
+    version: "{{ terminal_zinit_version }}"
+    depth: 1
+  become: true
+  become_user: "{{ terminal_user }}"
+
+- name: Set login shell
+  ansible.builtin.user:
+    name: "{{ terminal_user }}"
+    shell: "{{ terminal_shell }}"

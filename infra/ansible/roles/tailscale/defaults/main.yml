@@ -1,0 +1,8 @@
+---
+tailscale_tags: "tag:servers"
+tailscale_ssh: false
+# Set to a user who may run `tailscale serve` without sudo. Empty = skip.
+tailscale_operator: "{{ admin_user | default('') }}"
+# OAuth client secret (tskey-client-...?ephemeral=false&preauthorized=true) or auth key.
+tailscale_authkey: ""
+tailscale_authkey_path: /run/tailscale-authkey

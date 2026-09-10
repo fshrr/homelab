@@ -1,0 +1,63 @@
+---
+- name: Refuse non-Debian-family hosts
+  ansible.builtin.assert:
+    that: ansible_os_family == "Debian"
+    fail_msg: "base role only supports Debian-family hosts (got {{ ansible_os_family }})"
+
+# Transitional: hosts first set up by the shell scripts have one-line .list sources
+# that conflict with the deb822 sources the roles below write. Remove once every host
+# has been rebuilt from a template.
+- name: Remove legacy one-line apt sources left by manual install scripts
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}.list"
+    state: absent
+  loop:
+    - tailscale
+    - nodesource
+    - docker
+    - github-cli
+
+- name: Remove distro docker packages that conflict with docker-ce
+  ansible.builtin.apt:
+    name: "{{ base_conflicting_packages }}"
+    state: absent
+    purge: true
+
+- name: Install base packages
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install VM guest packages
+  ansible.builtin.apt:
+    name: "{{ base_vm_packages }}"
+    state: present
+  when: ansible_virtualization_type == "kvm" and ansible_virtualization_role == "guest"
+
+- name: Apply VM tuning sysctls
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: /etc/sysctl.d/60-tuning.conf
+    reload: true
+  loop: "{{ base_sysctl_tuning | dict2items }}"
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ base_timezone }}"
+
+- name: Enable and start chrony
+  ansible.builtin.service:
+    name: chrony
+    state: started
+    enabled: true
+
+# Starts on its own once the VM exposes the virtio serial device (Proxmox: `qm set <id> --agent 1`).
+# Only enabled here so a template without the device does not fail the run.
+- name: Enable qemu-guest-agent
+  ansible.builtin.service:
+    name: qemu-guest-agent
+    enabled: true
+  when: ansible_virtualization_type == "kvm" and ansible_virtualization_role == "guest"
