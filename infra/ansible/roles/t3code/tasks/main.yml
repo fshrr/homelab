@@ -9,6 +9,7 @@
   become_user: "{{ t3code_user }}"
   environment:
     NPM_CONFIG_PREFIX: "{{ t3code_npm_prefix }}"
+  notify: Restart t3code
 
 - name: Verify node-pty native module built
   ansible.builtin.stat:
