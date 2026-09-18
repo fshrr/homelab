@@ -3,4 +3,4 @@
 t3code_port: 3000
 
 # Exact npm version to pin. Bump and re-run to update.
-t3code_version: "0.0.38"
+t3code_version: "0.0.40"
